@@ -1,5 +1,7 @@
 package utility;
 
+import java.util.Date;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -28,7 +30,6 @@ public class IOHandler {
 
 	// 콘솔 or 텍스트 파일에 로깅
 	public void log(String s) {
-		// [날짜+시간+사용자명]+오류명 이런식으로 로깅하게 할 예정임
-		System.out.println(s);
+		System.out.println("[" + new Date() + ".Server]" + s);
 	}
 }
