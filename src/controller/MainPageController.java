@@ -14,12 +14,10 @@ public class MainPageController {
 
     @FXML
     void On_testBtn1_Clicked(ActionEvent event) {
-
     }
 
     @FXML
     void On_testBtn2_Clicked(ActionEvent event) {
-
     }
 
 }

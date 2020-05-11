@@ -40,6 +40,7 @@ public class LoginPageController {
         }
     }
 
+    // 로그인 버튼 클릭 시
     @FXML
     void On_loginBtn_Clicked(ActionEvent event) {
     	tryLogin();
@@ -47,14 +48,28 @@ public class LoginPageController {
 
     
     private void tryLogin() {
-    	String inputUserId = idField.getText();
-        String inputUserPw = pwField.getText();
-        
         try {
-        	// 대충 서버 연결해서 아이디 비번 체크
-        	// boolean isLoginSucceed = NetworkManager.tryLogin(inputUserId, inputUserPw);		// 대강 이런식으로...
+        	String inputUserId = idField.getText();
+            String inputUserPw = pwField.getText();
+            
+        	// 아이디 혹은 비밀번호가 비어있으면 빠꾸
+        	if(inputUserId.isEmpty()) {
+        		IOHandler.getInstance().showAlert("아이디가 비어있습니다.");
+        		idField.requestFocus();
+        		return;
+        	}
+        	else if(inputUserPw.isEmpty()) {
+        		IOHandler.getInstance().showAlert("비밀번호가 비어있습니다.");
+        		pwField.requestFocus();
+        		return;
+        	}
         	
+        	// 대충 서버 연결해서 아이디 비번 체크
+        	// boolean isLoginSucceed = NetworkManager.login(inputUserId, inputUserPw);		// 대강 이런식으로...
             boolean isLoginSucceed = true;
+            
+            
+            // 서버로부터 결과 나오면 처리
             if(isLoginSucceed) {
             	IOHandler.getInstance().showAlert("로그인 성공");
             	// 사용자 정보를 서버로부터 받아와서 저장해야 할 듯? 사용자명이라던가(지금은 없지만 있으면 좋을듯?), 찜 목록이라던가 
@@ -67,24 +82,27 @@ public class LoginPageController {
             
         }
         catch(Exception e) {
+        	// 알 수 없는 예외 터지면 알림 띄우고, 로그에 남김
         	String errorMsg = "LoginPageController.tryLogin\n" + e.getMessage();
         	IOHandler.getInstance().showAlert(errorMsg);
         	IOHandler.getInstance().log(errorMsg);
         }
     }
     
-    //메인 화면으로 이동
+    //메인 화면으로 이동하는 메소드
     private void moveToMain() {
         try {
             //메인페이지로 이동하기
-            Stage primaryStage = (Stage) loginBtn.getScene().getWindow(); 			// 기본 스테이지 가져오기
+            Stage primaryStage = (Stage) loginBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.show();
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+        	String errorMsg = "LoginPageController.moveToMain\n" + e.getMessage();
+        	IOHandler.getInstance().showAlert(errorMsg);
+        	IOHandler.getInstance().log(errorMsg);
         }
     }
     
