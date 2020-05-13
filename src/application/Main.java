@@ -12,7 +12,7 @@ public class Main extends Application {
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("/page/LoginPage.fxml"));
 			Scene scene = new Scene(root);
-			primaryStage.setTitle("¶Η³ªΏΝ Ε¬¶σΐΜΎπΖ®");
+			primaryStage.setTitle("λλ‚μ™€ ν΄λΌμ΄μ–ΈνΈ");
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {

@@ -24,23 +24,23 @@ public class LoginPageController {
     @FXML
     private Button loginBtn;
 
-    // ¾ÆÀÌµğ ÇÊµå ¿£ÅÍ ½Ã
+    // ì•„ì´ë”” í•„ë“œ ì—”í„° ì‹œ
     @FXML
     void On_idFiled_Typed(KeyEvent event) {
     	if (event.getCode() == KeyCode.ENTER || event.getCharacter().equals("\r")) {
-    		pwField.requestFocus();		// ÆĞ½º¿öµå ÇÊµå·Î Æ÷Ä¿½º
+    		pwField.requestFocus();		// íŒ¨ìŠ¤ì›Œë“œ í•„ë“œë¡œ í¬ì»¤ìŠ¤
         }
     }
     
-    // ÆĞ½º¿öµå ÇÊµå ¿£ÅÍ ½Ã
+    // íŒ¨ìŠ¤ì›Œë“œ í•„ë“œ ì—”í„° ì‹œ
     @FXML
     void On_pwField_Typed(KeyEvent event) {
     	if (event.getCode() == KeyCode.ENTER || event.getCharacter().equals("\r")) {
-            tryLogin();					// ·Î±×ÀÎ ½Ãµµ
+            tryLogin();					// ë¡œê·¸ì¸ ì‹œë„
         }
     }
 
-    // ·Î±×ÀÎ ¹öÆ° Å¬¸¯ ½Ã
+    // ë¡œê·¸ì¸ ë²„íŠ¼ í´ë¦­ ì‹œ
     @FXML
     void On_loginBtn_Clicked(ActionEvent event) {
     	tryLogin();
@@ -52,47 +52,47 @@ public class LoginPageController {
         	String inputUserId = idField.getText();
             String inputUserPw = pwField.getText();
             
-        	// ¾ÆÀÌµğ È¤Àº ºñ¹Ğ¹øÈ£°¡ ºñ¾îÀÖÀ¸¸é ºü²Ù
+        	// ì•„ì´ë”” í˜¹ì€ ë¹„ë°€ë²ˆí˜¸ê°€ ë¹„ì–´ìˆìœ¼ë©´ ë¹ ê¾¸
         	if(inputUserId.isEmpty()) {
-        		IOHandler.getInstance().showAlert("¾ÆÀÌµğ°¡ ºñ¾îÀÖ½À´Ï´Ù.");
+        		IOHandler.getInstance().showAlert("ì•„ì´ë””ê°€ ë¹„ì–´ìˆìŠµë‹ˆë‹¤.");
         		idField.requestFocus();
         		return;
         	}
         	else if(inputUserPw.isEmpty()) {
-        		IOHandler.getInstance().showAlert("ºñ¹Ğ¹øÈ£°¡ ºñ¾îÀÖ½À´Ï´Ù.");
+        		IOHandler.getInstance().showAlert("ë¹„ë°€ë²ˆí˜¸ê°€ ë¹„ì–´ìˆìŠµë‹ˆë‹¤.");
         		pwField.requestFocus();
         		return;
         	}
         	
-        	// ´ëÃæ ¼­¹ö ¿¬°áÇØ¼­ ¾ÆÀÌµğ ºñ¹ø Ã¼Å©
-        	// boolean isLoginSucceed = NetworkManager.login(inputUserId, inputUserPw);		// ´ë°­ ÀÌ·±½ÄÀ¸·Î...
+        	// ëŒ€ì¶© ì„œë²„ ì—°ê²°í•´ì„œ ì•„ì´ë”” ë¹„ë²ˆ ì²´í¬
+        	// boolean isLoginSucceed = NetworkManager.login(inputUserId, inputUserPw);		// ëŒ€ê°• ì´ëŸ°ì‹ìœ¼ë¡œ...
             boolean isLoginSucceed = true;
             
             
-            // ¼­¹ö·ÎºÎÅÍ °á°ú ³ª¿À¸é Ã³¸®
+            // ì„œë²„ë¡œë¶€í„° ê²°ê³¼ ë‚˜ì˜¤ë©´ ì²˜ë¦¬
             if(isLoginSucceed) {
-            	IOHandler.getInstance().showAlert("·Î±×ÀÎ ¼º°ø");
-            	// »ç¿ëÀÚ Á¤º¸¸¦ ¼­¹ö·ÎºÎÅÍ ¹Ş¾Æ¿Í¼­ ÀúÀåÇØ¾ß ÇÒ µí? »ç¿ëÀÚ¸íÀÌ¶ó´ø°¡(Áö±İÀº ¾øÁö¸¸ ÀÖÀ¸¸é ÁÁÀ»µí?), Âò ¸ñ·ÏÀÌ¶ó´ø°¡ 
+            	IOHandler.getInstance().showAlert("ë¡œê·¸ì¸ ì„±ê³µ");
+            	// ì‚¬ìš©ì ì •ë³´ë¥¼ ì„œë²„ë¡œë¶€í„° ë°›ì•„ì™€ì„œ ì €ì¥í•´ì•¼ í•  ë“¯? ì‚¬ìš©ìëª…ì´ë¼ë˜ê°€(ì§€ê¸ˆì€ ì—†ì§€ë§Œ ìˆìœ¼ë©´ ì¢‹ì„ë“¯?), ì°œ ëª©ë¡ì´ë¼ë˜ê°€ 
                 moveToMain();
             }
             else {
-            	IOHandler.getInstance().showAlert("·Î±×ÀÎ¿¡ ½ÇÆĞÇß½À´Ï´Ù. ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä.");
-            	idField.requestFocus();															// ¾ÆÀÌµğ ÇÊµå·Î Æ÷Ä¿½º
+            	IOHandler.getInstance().showAlert("ë¡œê·¸ì¸ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”.");
+            	idField.requestFocus();															// ì•„ì´ë”” í•„ë“œë¡œ í¬ì»¤ìŠ¤
             }
             
         }
         catch(Exception e) {
-        	// ¾Ë ¼ö ¾ø´Â ¿¹¿Ü ÅÍÁö¸é ¾Ë¸² ¶ç¿ì°í, ·Î±×¿¡ ³²±è
+        	// ì•Œ ìˆ˜ ì—†ëŠ” ì˜ˆì™¸ í„°ì§€ë©´ ì•Œë¦¼ ë„ìš°ê³ , ë¡œê·¸ì— ë‚¨ê¹€
         	String errorMsg = "LoginPageController.tryLogin\n" + e.getMessage();
         	IOHandler.getInstance().showAlert(errorMsg);
         	IOHandler.getInstance().log(errorMsg);
         }
     }
     
-    //¸ŞÀÎ È­¸éÀ¸·Î ÀÌµ¿ÇÏ´Â ¸Ş¼Òµå
+    //ë©”ì¸ í™”ë©´ìœ¼ë¡œ ì´ë™í•˜ëŠ” ë©”ì†Œë“œ
     private void moveToMain() {
         try {
-            //¸ŞÀÎÆäÀÌÁö·Î ÀÌµ¿ÇÏ±â
+            //ë©”ì¸í˜ì´ì§€ë¡œ ì´ë™í•˜ê¸°
             Stage primaryStage = (Stage) loginBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
             Scene scene = new Scene(root);
