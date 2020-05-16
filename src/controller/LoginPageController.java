@@ -27,7 +27,7 @@ public class LoginPageController {
     // 아이디 필드 엔터 시
     @FXML
     void On_idFiled_Typed(KeyEvent event) {
-    	if (event.getCode() == KeyCode.ENTER || event.getCharacter().equals("\r")) {
+    	if (event.getCode() == KeyCode.TAB || event.getCharacter().equals("\r")) {
     		pwField.requestFocus();		// 패스워드 필드로 포커스
         }
     }
@@ -72,7 +72,7 @@ public class LoginPageController {
             // 서버로부터 결과 나오면 처리
             if(isLoginSucceed) {
             	IOHandler.getInstance().showAlert("로그인 성공");
-            	// 사용자 정보를 서버로부터 받아와서 저장해야 할 듯? 사용자명이라던가(지금은 없지만 있으면 좋을듯?), 찜 목록이라던가 
+            	// 사용자 정보를 서버로부터 받아와서 저장해야 할 듯? 사용자명이라던가(지금은 없지만 있으면 좋을듯?), 찜 목록이라던가             	
                 moveToMain();
             }
             else {
