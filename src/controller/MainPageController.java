@@ -18,7 +18,8 @@ public class MainPageController {
 
     @FXML
     void OnClikedSearchBtn(ActionEvent event) {
-    	IOHandler.getInstance().showAlert("테스트");
+    	//IOHandler.getInstance().showAlert("검색버튼 클릭");
+    	//검색 수행
     }
 
     @FXML
