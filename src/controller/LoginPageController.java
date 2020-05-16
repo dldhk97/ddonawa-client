@@ -23,11 +23,13 @@ public class LoginPageController {
 	
     @FXML
     private Button loginBtn;
+    @FXML
+    private Button RegisterBtn;
 
     // 아이디 필드 엔터 시
     @FXML
     void On_idFiled_Typed(KeyEvent event) {
-    	if (event.getCode() == KeyCode.TAB || event.getCharacter().equals("\r")) {
+    	if (event.getCode() == KeyCode.ENTER || event.getCharacter().equals("\r")) {
     		pwField.requestFocus();		// 패스워드 필드로 포커스
         }
     }
@@ -44,6 +46,12 @@ public class LoginPageController {
     @FXML
     void On_loginBtn_Clicked(ActionEvent event) {
     	tryLogin();
+    }
+    
+    // 회원가입 클릭 시
+    @FXML
+    void OnRegisterBtnClicked(ActionEvent event) {    	
+    	moveToRegister();
     }
 
     
@@ -106,5 +114,22 @@ public class LoginPageController {
         }
     }
     
+    //회원가입 화면으로 이동하는 메소드
+    private void moveToRegister() {
+        try {           
+            Stage primaryStage = (Stage) RegisterBtn.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("/page/RegisterPage.fxml"));
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("또나와 회원가입");
+            primaryStage.show();
 
+        } catch (Exception e) {
+        	String errorMsg = "LoginPageController.moveToRegister\n" + e.getMessage();
+        	e.printStackTrace();
+        	IOHandler.getInstance().showAlert(errorMsg);
+        	IOHandler.getInstance().log(errorMsg);
+        }
+    }
+    
 }
