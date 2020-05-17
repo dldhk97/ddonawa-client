@@ -36,8 +36,11 @@ public class MainPageController {
     void On_testBtn2_Clicked(ActionEvent event) {
 
     }
+    
+    //여기에 각 버튼별 카테고리 searchPage로 이동하는 액션 구현해야함
+    
 
-    //메인 화면으로 이동하는 메소드
+    //검색 화면으로 이동하는 메소드
     private void moveToSearchPage() {
         try {
             //검색페이지로 이동하기

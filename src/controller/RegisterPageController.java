@@ -55,6 +55,11 @@ public class RegisterPageController {
         	//
         	// 아이디 중복체크 수행 해야함 수정 필요
         	//
+        	
+        	//
+        	// 회원가입 성공 했는지 확인해야 함  ex) isSuccess = true;
+        	//
+        	
             boolean isRegisterSucceed = true;
             
             

@@ -20,6 +20,7 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import utility.IOHandler;
 
@@ -51,7 +52,8 @@ public class SearchPageController {
     void OnProductClicked(MouseEvent event) {
     	if(event.getClickCount()>1)
     	{
-    		System.out.println(table.getSelectionModel().getSelectedItem().getName());
+    		System.out.println(table.getSelectionModel().getSelectedItem().getName());    		
+    		
     		moveToProductPage();
     	}
     }
@@ -94,6 +96,8 @@ public class SearchPageController {
     
 }
 
+
+// 임의로 쓰는 데이터 객체, 테이블뷰에 쓰려면 StringProperty나 IntProperty 형식으로 써야함
 class Data{
     private StringProperty name;
     private StringProperty address;
