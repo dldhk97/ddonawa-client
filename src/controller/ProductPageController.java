@@ -23,7 +23,7 @@ public class ProductPageController implements Initializable {
     
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
+		// 이미지 설정하는 부분
 		String s = "http://img.danawa.com/prod_img/500000/562/196/img/5196562_1.jpg?";
 		Image img = new Image(s);
 		Image.setImage(img);

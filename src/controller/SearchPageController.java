@@ -46,6 +46,7 @@ public class SearchPageController {
     	IOHandler.getInstance().showAlert("테스트");
     }       
     
+    //상품이 클릭되었을 때
     @FXML
     void OnProductClicked(MouseEvent event) {
     	if(event.getClickCount()>1)
@@ -69,8 +70,8 @@ public class SearchPageController {
     	 }
     	 ImageColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
          ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().addressProperty());
-         PriceColumn.setCellValueFactory(cellData -> cellData.getValue().genderProperty());
-    	
+         PriceColumn.setCellValueFactory(cellData -> cellData.getValue().genderProperty());    	
+      
     	table.setItems(myList);
     }
     
