@@ -105,6 +105,7 @@ public class LoginPageController {
             Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
+            primaryStage.setTitle("또나와 메인화면");
             primaryStage.show();
 
         } catch (Exception e) {

@@ -90,6 +90,7 @@ public class RegisterPageController {
             Parent root = FXMLLoader.load(getClass().getResource("/page/LoginPage.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
+            primaryStage.setTitle("또나와 로그인");
             primaryStage.show();
 
         } catch (Exception e) {

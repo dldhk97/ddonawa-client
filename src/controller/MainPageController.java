@@ -1,21 +1,32 @@
 package controller;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import utility.IOHandler;
 
-public class MainPageController {
+public class MainPageController implements Initializable {
 
     @FXML
-    private Button testBtn1;
+    private HBox hbox1;
 
     @FXML
-    private Button testBtn2;
+    private HBox hbox2;
+
+    @FXML
+    private HBox hbox3;
 
     @FXML
     private Button searchBtn;
@@ -37,7 +48,38 @@ public class MainPageController {
 
     }
     
-    //여기에 각 버튼별 카테고리 searchPage로 이동하는 액션 구현해야함
+    @Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// 머품목 갯수 받아와서 버튼 만드러줌
+    	//ArrayList<BigCategory> aList
+    	int tempNum=3;
+    	
+    	ArrayList<Button> btnList= new ArrayList<Button>();
+    	
+    	for(int i=0; i<tempNum;i++)
+    	{
+    		btnList.add(new Button());     	    		
+    	}
+    	
+    	hbox1.getChildren().addAll(btnList);
+    	btnList.get(0).setText("카테고리1");   	
+    	btnList.get(1).setText("카테고리2");
+    	btnList.get(2).setText("카테고리3");
+    	hbox1.setMargin(btnList.get(0), new Insets(10));  
+    	hbox1.setMargin(btnList.get(1), new Insets(20));
+    	//btnList.get(0).setOnMouseDragOver(event -> {System.out.println("테스트");});
+    	//Hover 이벤트 주는거
+    	    
+    	btnList.get(0).addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+    	      @Override
+    	      public void handle(MouseEvent event) {
+    	        System.out.println("ㅇㅇ");
+    	      }
+    	    });
+
+
+    	
+	}
     
 
     //검색 화면으로 이동하는 메소드
@@ -57,5 +99,7 @@ public class MainPageController {
         	IOHandler.getInstance().log(errorMsg);
         }
     }
+
+	
 }
 

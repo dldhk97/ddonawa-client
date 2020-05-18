@@ -64,12 +64,13 @@ public class SearchPageController {
     	IOHandler.getInstance().showAlert("테스트");
     	
     		
-    	 ObservableList<Data> myList = FXCollections.observableArrayList(new Data(new SimpleStringProperty("가"),new SimpleStringProperty("나"),new SimpleStringProperty("다")));
+    	 ObservableList<Data> myList = FXCollections.observableArrayList();
     	 
-    	 for(int i=0;i<30;i++)
-    	 {
-    		 myList.add(new Data(new SimpleStringProperty("가"),new SimpleStringProperty("나"),new SimpleStringProperty("다")));
-    	 }
+    	
+    	 myList.add(new Data(new SimpleStringProperty("사진"),new SimpleStringProperty("고기"),new SimpleStringProperty("1000")));
+    	 myList.add(new Data(new SimpleStringProperty("사진"),new SimpleStringProperty("나물"),new SimpleStringProperty("2000")));
+    	 myList.add(new Data(new SimpleStringProperty("사진"),new SimpleStringProperty("생선"),new SimpleStringProperty("3000")));
+    	 
     	 ImageColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
          ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().addressProperty());
          PriceColumn.setCellValueFactory(cellData -> cellData.getValue().genderProperty());    	
