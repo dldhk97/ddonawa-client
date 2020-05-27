@@ -1,0 +1,26 @@
+#menu {
+    -fx-background-color: #88F;
+    -fx-spacing: 10;
+}
+
+#menu .buttonBar {
+    -fx-pref-height: 30;
+    -fx-pref-width: 200;
+    -fx-background-color: #66F;
+}
+
+#menu .buttonBar:hover {
+    -fx-background-color: #F6F;
+}
+
+#menu .MenuButton{
+	-fx-pref-height: 30;
+    -fx-pref-width: 200;
+    -fx-background-color: #66F;
+}
+
+#menu .MenuItem{
+	-fx-pref-height: 30;
+    -fx-pref-width: 200;
+    -fx-background-color: #66F;
+}
