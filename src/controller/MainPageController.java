@@ -73,7 +73,7 @@ public class MainPageController implements Initializable {
     	btnList.get(0).addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
     	      @Override
     	      public void handle(MouseEvent event) {
-    	        System.out.println("ㅇㅇ");
+    	        System.out.println("카테고리1 Hover");
     	      }
     	    });
 
