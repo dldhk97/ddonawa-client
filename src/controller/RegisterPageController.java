@@ -9,6 +9,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Account;
+import task.AccountTask;
 import utility.IOHandler;
 
 public class RegisterPageController {
@@ -52,16 +54,10 @@ public class RegisterPageController {
         		return;
         	}
         	
-        	//
-        	// 아이디 중복체크 수행 해야함 수정 필요
-        	//
-        	
-        	//
-        	// 회원가입 성공 했는지 확인해야 함  ex) isSuccess = true;
-        	//
-        	
-            boolean isRegisterSucceed = true;
-            
+        	AccountTask a = new AccountTask();
+        	Account inputAccount = new Account(IdField.getText(), PwdField.getText());
+        	boolean isRegisterSucceed = a.register(inputAccount);      	
+                 
             
             // 서버로부터 결과 나오면 처리
             if(isRegisterSucceed) {
@@ -70,8 +66,7 @@ public class RegisterPageController {
                 moveToLoginPage();
             }
             else {
-            	IOHandler.getInstance().showAlert("아이디가 중복되었습니다. 다른 아이디로 가입해주시기 바랍니다.");
-            	IdField.requestFocus();															// 아이디 필드로 포커스
+            	IOHandler.getInstance().showAlert("회원가입 실패");            	
             }
             
         }
