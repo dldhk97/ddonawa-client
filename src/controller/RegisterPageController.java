@@ -54,7 +54,7 @@ public class RegisterPageController {
         		return;
         	}
         	
-        	AccountTask a = new AccountTask();
+        	AccountTask a = new AccountTask();        	
         	Account inputAccount = new Account(IdField.getText(), PwdField.getText());
         	boolean isRegisterSucceed = a.register(inputAccount);      	
                  
@@ -66,7 +66,7 @@ public class RegisterPageController {
                 moveToLoginPage();
             }
             else {
-            	IOHandler.getInstance().showAlert("회원가입 실패");            	
+            	//IOHandler.getInstance().showAlert("회원가입 실패");            	
             }
             
         }

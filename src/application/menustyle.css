@@ -13,14 +13,11 @@
     -fx-background-color: #F6F;
 }
 
-#menu .MenuButton{
-	-fx-pref-height: 30;
-    -fx-pref-width: 200;
-    -fx-background-color: #66F;
+#menuBtn{
+	-fx-max-height: 100;
+	-fx-background-color:blue ;	
 }
 
-#menu .MenuItem{
-	-fx-pref-height: 30;
-    -fx-pref-width: 200;
-    -fx-background-color: #66F;
+.MenuItem:hover{
+	-fx-background-color: pink;
 }
