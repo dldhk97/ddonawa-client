@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.ArrayList;
+
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +20,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Account;
+import model.BigCategory;
+import model.Category;
+import task.AccountTask;
+import task.BigCategoryTask;
+import task.CategoryTask;
+import task.LoginResult;
 import utility.IOHandler;
 
 public class LoginPageController {
@@ -81,20 +90,33 @@ public class LoginPageController {
         	
         	// 대충 서버 연결해서 아이디 비번 체크
         	// boolean isLoginSucceed = NetworkManager.login(inputUserId, inputUserPw);		// 대강 이런식으로...
-            boolean isLoginSucceed = true;
-            
-            
-            // 서버로부터 결과 나오면 처리
-            if(isLoginSucceed) {
-            	IOHandler.getInstance().showAlert("로그인 성공");
-            	// 사용자 정보를 서버로부터 받아와서 저장해야 할 듯? 사용자명이라던가(지금은 없지만 있으면 좋을듯?), 찜 목록이라던가             	
-                moveToMain();
-            }
-            else {
-            	IOHandler.getInstance().showAlert("로그인에 실패했습니다. 다시 시도해주세요.");
-            	idField.requestFocus();															// 아이디 필드로 포커스
-            }
-            
+        	Account inputAccount= new Account(idField.getText(), pwField.getText());
+        	AccountTask a= new AccountTask();        	
+        	
+        	switch(a.tryLogin(inputAccount)) {
+        	case SUCCEED:
+        		IOHandler.getInstance().showAlert("로그인에 성공했습니다");
+        		 moveToMain();
+        		break;
+        	case ID_NOT_FOUND:   
+        		IOHandler.getInstance().showAlert("아이디를 찾을 수 없습니다.");
+        		idField.requestFocus();
+        	case WRONG_PW:
+        		IOHandler.getInstance().showAlert("비밀번호가 틀렸습니다.");
+        		pwField.requestFocus();
+        		break;
+        	case ERROR:
+        		IOHandler.getInstance().showAlert("오류 발생");
+        		break;
+        	case UNKNOWN:
+        		IOHandler.getInstance().showAlert("인투 디 언노온~");
+        		break;
+        	}	 	
+        	           
+        	//사용자 정보 저장해야할 듯
+        	
+        	
+        	//moveToMain();
         }
         catch(Exception e) {
         	// 알 수 없는 예외 터지면 알림 띄우고, 로그에 남김
@@ -113,24 +135,61 @@ public class LoginPageController {
             //Scene scene = new Scene(root);    	    
            	
             Pane root1 = new Pane();
-       	 root1.setPrefSize(600, 400);    
-       	 VBox menu = new VBox();
+       	 	root1.setPrefSize(600, 400);    
+       	 	VBox menu = new VBox();
        	 
        	    menu.setId("menu");
        	    menu.prefHeightProperty().bind(root1.heightProperty());
        	    menu.setPrefWidth(100);
 
-       	   // 나중에 동적으로 추가해줘야 할듯
-       	    MenuItem menuItem1 = new MenuItem("A-1");
-       	    MenuItem menuItem2 = new MenuItem("A-2");
-       	 	MenuItem menuItem3 = new MenuItem("A-3");
-       	 	MenuButton menuBtn1= new MenuButton("카테고리 A", null,menuItem1,menuItem2,menuItem3);
-       	 	
-       	 	MenuItem menuItem4 = new MenuItem("B-1");
-    	    MenuItem menuItem5 = new MenuItem("B-2");
-    	 	MenuItem menuItem6 = new MenuItem("B-3");
-    	 	MenuButton menuBtn2= new MenuButton("카테고리 B", null,menuItem4,menuItem5,menuItem6);
-       	 	menu.getChildren().addAll(menuBtn1,menuBtn2);
+       	   // 나중에 동적으로 추가해줘야 할듯       	   
+       	    BigCategoryTask a= new BigCategoryTask();
+       	    ArrayList<BigCategory> bigCategoryList= a.getAllBigCategory();
+//       	    ArrayList<BigCategory> bigCategoryList= new ArrayList<BigCategory>();
+//       	    bigCategoryList.add(new BigCategory("1", "의류"));
+//       	    bigCategoryList.add(new BigCategory("2", "식품"));
+//       	    bigCategoryList.add(new BigCategory("3", "건강"));       	    
+       	    
+       	    
+       	    CategoryTask b = new CategoryTask();
+//      	    ArrayList<Category> categoryList = b.findByBigCategory(bigCategory);
+//      	    ArrayList<Category> categoryList = new ArrayList<Category>();
+//      	    categoryList.add(new Category("1", "남성상의", "1"));
+//      	    categoryList.add(new Category("2", "여상상의", "1"));
+//      	    categoryList.add(new Category("3", "남성하의", "1"));
+       	    MenuButton menuBtn = new MenuButton();
+       	    menuBtn.setId("menuBtn");
+       	   
+    	    
+       	    for(int i=0;i<bigCategoryList.size();i++)
+       	    {
+       	    	menuBtn = new MenuButton(bigCategoryList.get(i).getName());           	    	
+       	    	ArrayList<Category> categoryList = b.findByBigCategory(bigCategoryList.get(i));
+       	    	for(int j=0;j<categoryList.size();j++)
+       	    	{
+       	    		MenuItem mitem = new MenuItem(categoryList.get(j).getName());
+       	    		mitem.setOnAction( evt -> {
+       	    			//카테고리 클릭했을 때 액션       	    			
+       	    			IOHandler.getInstance().showAlert(mitem.getText());
+       	    		});
+       	    		menuBtn.getItems().addAll(mitem);       	    	
+       	    	}
+       	    	menu.getChildren().add(menuBtn);
+       	    }
+       	   
+       	   
+       	    
+       	    
+//       	    MenuItem menuItem1 = new MenuItem("A-1");
+//       	    MenuItem menuItem2 = new MenuItem("A-2");
+//       	 	MenuItem menuItem3 = new MenuItem("A-3");
+//       	 	MenuButton menuBtn1= new MenuButton("카테고리 A", null,menuItem1,menuItem2,menuItem3);       	 
+//       	 	
+//       	 	MenuItem menuItem4 = new MenuItem("B-1");
+//    	    MenuItem menuItem5 = new MenuItem("B-2");
+//    	 	MenuItem menuItem6 = new MenuItem("B-3");
+//    	 	MenuButton menuBtn2= new MenuButton("카테고리 B", null,menuItem4,menuItem5,menuItem6);
+//       	 	menu.getChildren().addAll(menuBtn1,menuBtn2);
 
        	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
        	    menu.setTranslateX(-90);
