@@ -14,21 +14,25 @@ public class AccountTask {
 		AccountManager am = new AccountManager();
 		try {
 			if(isInvalidAccountInfo(account)) {
+				IOHandler.getInstance().showAlert("유효성 검사 FAIL 이거 나중에 추가 필요함");
 				IOHandler.getInstance().log("ID 혹은 PW가 글러먹었습니다.");
 				return false;
 			}
 			ArrayList<Account> received = searchById(account.getId());
 			
 			if(received != null) {
+				IOHandler.getInstance().showAlert("해당 아이디는 중복입니다.");
 				IOHandler.getInstance().log("해당 아이디는 중복입니다.");
 				return false;
 			}
 			
 			if(am.insert(account) > 0) {
+				IOHandler.getInstance().showAlert("계정이 등록되었습니다.");
 				IOHandler.getInstance().log("계정이 등록되었습니다.");
 				return true;
 			}
 			else {
+				IOHandler.getInstance().showAlert("계정이 등록에 실패하였습니다.");
 				IOHandler.getInstance().log("계정이 등록에 실패하였습니다.");
 				return false;
 			}
