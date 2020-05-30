@@ -21,9 +21,9 @@
       </HBox>
       <TableView fx:id="table" onMouseClicked="#OnProductClicked">
          <columns>
-            <TableColumn fx:id="ImageColumn" prefWidth="218.0"  text="(썸네일)" />
+            <TableColumn fx:id="ImageColumn" prefWidth="218.0" text="(썸네일)" />
             <TableColumn fx:id="ProductNameColumn" prefWidth="214.0" text="상품명" />
-            <TableColumn fx:id="PriceColumn" prefWidth="167.0"  text="가격" />
+            <TableColumn fx:id="PriceColumn" prefWidth="167.0" text="가격" />
          </columns>
          <VBox.margin>
             <Insets bottom="20.0" />
@@ -32,6 +32,7 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
+      <Button fx:id="goToMainBtn" mnemonicParsing="false" onAction="#OnGoToMainBtnClicked" text="메인화면" />
       <Button fx:id="testBtn" mnemonicParsing="false" onAction="#test" text="Button" />
    </children>
 </VBox>

@@ -98,5 +98,6 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </LineChart>
+      <Button fx:id="goToMainBtn" mnemonicParsing="false" onAction="#OnGoToMainBtnClicked" text="메인화면" />
    </children>
 </VBox>
