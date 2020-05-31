@@ -41,6 +41,7 @@ public class MainPageController implements Initializable {
     	if(event.getCode()==KeyCode.ENTER)
     	{
     		IOHandler.getInstance().showAlert("검색버튼 클릭");
+    		//테스트
     	}
     }
     @FXML
