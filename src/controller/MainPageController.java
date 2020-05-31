@@ -15,6 +15,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -33,12 +35,19 @@ public class MainPageController implements Initializable {
     
     @FXML
     private TextField searchField;
-
+    
+    @FXML
+    void OnSearchPressed(KeyEvent event) {
+    	if(event.getCode()==KeyCode.ENTER)
+    	{
+    		IOHandler.getInstance().showAlert("검색버튼 클릭");
+    	}
+    }
     @FXML
     void OnClikedSearchBtn(ActionEvent event) {
     	//검색 수행
     	IOHandler.getInstance().showAlert("검색버튼 클릭");
-    	//moveToSearchPage();
+    	
     	
     	ProductTask ptask = new ProductTask();
     	ArrayList<Product> resultList = ptask.searchByProductName(searchField.getText());
@@ -46,7 +55,7 @@ public class MainPageController implements Initializable {
     	{
     		System.out.println(resultList.get(i));
     	}
-    	
+    	moveToSearchPage();
     }
 
     @FXML
