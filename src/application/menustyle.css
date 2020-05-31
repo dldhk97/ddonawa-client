@@ -1,6 +1,7 @@
 #menu {
     -fx-background-color: #88F;
     -fx-spacing: 10;
+    -fx-min-width: 100;
 }
 
 #menu .buttonBar {

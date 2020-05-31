@@ -6,6 +6,7 @@ import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,6 +17,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -134,12 +138,12 @@ public class LoginPageController {
             Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
             //Scene scene = new Scene(root);    	    
            	
-            Pane root1 = new Pane();
-       	 	root1.setPrefSize(600, 400);    
-       	 	VBox menu = new VBox();
-       	 
-       	    menu.setId("menu");
-       	    menu.prefHeightProperty().bind(root1.heightProperty());
+            //Pane root1 = new Pane();            
+            HBox root1 = new HBox();
+       	 	root1.setPrefSize(600, 400);         	 	
+       	 	VBox menu = new VBox();       	 	 	 	
+       	 	root1.setAlignment(Pos.CENTER);
+       	    menu.setId("menu");       	    
        	    menu.setPrefWidth(100);
 
        	   // 나중에 동적으로 추가해줘야 할듯       	   
@@ -193,11 +197,10 @@ public class LoginPageController {
 
        	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
        	    menu.setTranslateX(-90);
-       	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);
-
+       	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);       	    
        	    menuTranslation.setFromX(-90);
        	    menuTranslation.setToX(0);
-
+       	   
        	    menu.setOnMouseEntered(evt -> {
        	        menuTranslation.setRate(1);
        	        menuTranslation.play();
@@ -207,7 +210,7 @@ public class LoginPageController {
        	        menuTranslation.play();
        	    });
        	    
-       	    root1.getChildren().addAll(root,menu);
+       	    root1.getChildren().addAll(menu,root);
        	    Scene scene = new Scene(root1);
        	    
        	    
