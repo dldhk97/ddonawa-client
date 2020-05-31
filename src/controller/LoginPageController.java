@@ -200,7 +200,7 @@ public class LoginPageController {
        	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);       	    
        	    menuTranslation.setFromX(-90);
        	    menuTranslation.setToX(0);
-       	   
+       	    
        	    menu.setOnMouseEntered(evt -> {
        	        menuTranslation.setRate(1);
        	        menuTranslation.play();
