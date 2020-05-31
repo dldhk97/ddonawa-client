@@ -14,6 +14,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -21,27 +22,31 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Product;
+import task.ProductTask;
 import utility.IOHandler;
 
 public class MainPageController implements Initializable {
 
     @FXML
-    private HBox hbox1;
-
-    @FXML
-    private HBox hbox2;
-
-    @FXML
-    private HBox hbox3;
-
-    @FXML
     private Button searchBtn;
+    
+    @FXML
+    private TextField searchField;
 
     @FXML
     void OnClikedSearchBtn(ActionEvent event) {
     	//검색 수행
     	IOHandler.getInstance().showAlert("검색버튼 클릭");
-    	moveToSearchPage();
+    	//moveToSearchPage();
+    	
+    	ProductTask ptask = new ProductTask();
+    	ArrayList<Product> resultList = ptask.searchByProductName(searchField.getText());
+    	for(int i=0;i<resultList.size();i++)
+    	{
+    		System.out.println(resultList.get(i));
+    	}
+    	
     }
 
     @FXML
