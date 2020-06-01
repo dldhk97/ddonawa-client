@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -29,7 +30,7 @@ import task.ProductTask;
 import utility.IOHandler;
 
 public class MainPageController implements Initializable {
-
+	
     @FXML
     private Button searchBtn;
     
@@ -47,15 +48,8 @@ public class MainPageController implements Initializable {
     @FXML
     void OnClikedSearchBtn(ActionEvent event) {
     	//검색 수행
-    	IOHandler.getInstance().showAlert("검색버튼 클릭");
-    	
-    	
-    	ProductTask ptask = new ProductTask();
-    	ArrayList<Product> resultList = ptask.searchByProductName(searchField.getText());
-    	for(int i=0;i<resultList.size();i++)
-    	{
-    		System.out.println(resultList.get(i));
-    	}
+    	IOHandler.getInstance().showAlert("검색버튼 클릭");    	   
+    	    	
     	moveToSearchPage();
     }
 
@@ -130,24 +124,37 @@ public class MainPageController implements Initializable {
 //    	    
 //    	    stage.setScene(scene);
 //    	    stage.show();    	
-    	 
-    	  
+    	searchBtn.setOnAction(event->{
+    		IOHandler.getInstance().showAlert("검색버튼 클릭");
+        	
+        	String s = searchField.getText();
+        	System.out.println("입력값 :" +s);
+        	moveToSearchPage();
+    	});
 	}
     
 
     //검색 화면으로 이동하는 메소드
     private void moveToSearchPage() {
-        try {
+       try {
             //검색페이지로 이동하기
             Stage primaryStage = (Stage) searchBtn.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("/page/SearchPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/SearchPage.fxml"));
+            Parent root =  loader.load();        
             Scene scene = new Scene(root);
+            
+            SearchPageController sController = loader.getController();
+            sController.transferProduct(searchField.getText());
+            
+           
             primaryStage.setScene(scene);
             primaryStage.setTitle("또나와 검색결과");
             primaryStage.show();
+            
+            
 
         } catch (Exception e) {
-        	String errorMsg = "LoginPageController.moveToSearchPage\n" + e.getMessage();
+        	String errorMsg = "MainPageController.moveToSearchPage\n"+ e.getMessage();
         	IOHandler.getInstance().showAlert(errorMsg);
         	IOHandler.getInstance().log(errorMsg);
         }

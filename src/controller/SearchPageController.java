@@ -1,6 +1,8 @@
 package controller;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import javafx.animation.TranslateTransition;
 import javafx.beans.property.IntegerProperty;
@@ -13,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,19 +25,22 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Product;
+import task.ProductTask;
 import utility.IOHandler;
 
-public class SearchPageController {
-
+public class SearchPageController implements Initializable {
     @FXML
     private Button SearchBtn;
-
+    @FXML
+    private TextField searchField;
     @FXML
     private Button testBtn;
     @FXML
@@ -162,6 +168,23 @@ public class SearchPageController {
          	IOHandler.getInstance().log(errorMsg);
          }
     }
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// TODO Auto-generated method stub
+		searchField.requestFocus();
+	}
+    
+	public void transferProduct(String s)
+    {
+    	searchField.setText(s);
+    	ProductTask pTask = new ProductTask();
+    	ArrayList<Product> productList = pTask.searchByProductName(s);
+    	for(int i=0;i<productList.size();i++) {
+    		System.out.println(productList.get(i));
+    	}
+    }
+	
     
 }
 
