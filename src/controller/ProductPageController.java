@@ -1,11 +1,14 @@
 package controller;
 
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import db.CollectedInfoManager;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,14 +20,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 import model.BigCategory;
 import model.Category;
+import model.CollectedInfo;
+import model.Product;
 import task.BigCategoryTask;
 import task.CategoryTask;
+import task.ProductTask;
 import utility.IOHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -37,8 +44,17 @@ import javafx.scene.image.Image;
 
 
 public class ProductPageController implements Initializable {	
-	 @FXML
+		@FXML
 	    private ImageView Image;
+		
+	 	@FXML
+	 	private TextField pName;
+
+	    @FXML
+	    private TextField pPrice;
+
+	    @FXML
+	    private TextField pMinPrice;
 
 	    @FXML
 	    private Button zzimBtn;
@@ -156,11 +172,7 @@ public class ProductPageController implements Initializable {
     //URI 오류는 보통 링크를 틀렸을때 많이 나옴 , http:// 붙였는지 등등 확인 필요
     @FXML
     void OnProductImageClicked(MouseEvent event)  {
-    	try {     		
-    		Desktop.getDesktop().browse(new URI("http://prod.danawa.com/info/?pcode=9491865&keyword=%EA%B3%A0%EA%B8%B0&cate=1622520")); 
-    	} catch (Exception e) {
-    		e.printStackTrace(); 
-    	}
+    
 
     }    
     
@@ -172,9 +184,9 @@ public class ProductPageController implements Initializable {
     	// 맨 처음 초기화 하면서 차트, 이름, 가격, URL, 썸네일 등 초기화 해서 화면 보여줘야함 
     	
 		// 이미지 설정하는 부분
-		String s = "http://img.danawa.com/prod_img/500000/562/196/img/5196562_1.jpg?";
-		Image img = new Image(s);
-		Image.setImage(img); 	    
+//		String s = "http://img.danawa.com/prod_img/500000/562/196/img/5196562_1.jpg?";
+//		Image img = new Image(s);
+//		Image.setImage(img); 	    
 	    
 	}
     
@@ -203,4 +215,48 @@ public class ProductPageController implements Initializable {
 //    	}
     	zzimBar.setVisible(true);
     }
+    public void DataTransfer(String s)
+    {
+    	try {
+    	CollectedInfoManager cManager = new CollectedInfoManager();
+    	ArrayList<CollectedInfo> p = cManager.findByProductName(s);
+    	if(p.size()<1)
+    	{
+    		System.out.println("선택한 상품을 검색에서 못받아옴");
+    	}    	
+    	System.out.println("테스트1");
+    	Double min = Double.MAX_VALUE;
+    	for(int i=0;i<p.size();i++)
+    	{
+    		System.out.println(p.get(i));
+    		if(p.get(i).getPrice() < min)
+    		{
+    			min = p.get(i).getPrice();
+    		}
+    	}
+    	
+    	if(p.get(0).getThumbnail().length()>0)
+    	{
+			Image img = new Image(p.get(0).getThumbnail());
+			Image.setImage(img); 	 
+    	}
+		pName.setText(p.get(0).getProductName());
+		Double price =p.get(0).getPrice();
+		pPrice.setText(price.toString());
+		pMinPrice.setText(min.toString());
+		
+		Image.setOnMouseClicked(event->{
+			try {
+				Desktop.getDesktop().browse(new URI(p.get(0).getUrl()));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		});
+    	}catch(Exception e) {
+    		IOHandler.getInstance().log("ProductPageController.DataTransfer : " +e);
+    	}    	
+    	
+    }
+    
 }

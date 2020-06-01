@@ -26,42 +26,37 @@
             </VBox>
             <VBox alignment="CENTER">
                <children>
-                  <HBox>
+                  <HBox alignment="TOP_CENTER">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="상품명">
                            <HBox.margin>
-                              <Insets bottom="20.0" right="50.0" />
+                              <Insets bottom="20.0" right="10.0" />
                            </HBox.margin>
                         </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+                        <TextField fx:id="pName" editable="false" />
                      </children>
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </HBox>
-                  <HBox>
+                  <HBox alignment="TOP_CENTER">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="가격">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="가격   ">
                            <HBox.margin>
-                              <Insets bottom="20.0" right="50.0" />
+                              <Insets bottom="20.0" right="10.0" />
                            </HBox.margin>
                         </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0">
-                           <HBox.margin>
-                              <Insets right="20.0" />
-                           </HBox.margin>
-                        </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="원" />
+                        <TextField fx:id="pPrice" editable="false" />
                      </children>
                   </HBox>
                   <HBox>
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="최저가">
                            <HBox.margin>
-                              <Insets right="50.0" />
+                              <Insets right="10.0" />
                            </HBox.margin>
                         </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+                        <TextField fx:id="pMinPrice" editable="false" />
                      </children>
                   </HBox>
                </children>

@@ -173,10 +173,11 @@ public class SearchPageController implements Initializable {
     @FXML
     void OnProductClicked(MouseEvent event) {
     	if(event.getClickCount()>1)
-    	{
-    		System.out.println(table.getSelectionModel().getSelectedItem().getName()+" clicked!");    		
-    		
-    		moveToProductPage();
+    	{    		  		
+    		String s = table.getSelectionModel().getSelectedItem().getName();
+    		s=s.substring(23, s.length()-1);    		
+    		System.out.println(s+" clicked!");  
+    		moveToProductPage(s);
     	}
     }
 
@@ -200,17 +201,23 @@ public class SearchPageController implements Initializable {
 //    	table.setItems(myList);
     }
     
-    private void moveToProductPage()
+    private void moveToProductPage(String s)
     {
     	 try {           
-             Stage primaryStage = (Stage) table.getScene().getWindow();
-             Parent root = FXMLLoader.load(getClass().getResource("/page/ProductPage.fxml"));
+             Stage primaryStage = (Stage) table.getScene().getWindow();            
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/ProductPage.fxml"));
+             Parent root = loader.load();
              Scene scene = new Scene(root);
+             
+             ProductPageController pController = loader.getController();
+             pController.DataTransfer(s);
+             
              primaryStage.setScene(scene);
+             primaryStage.setTitle(s);
              primaryStage.show();
 
          } catch (Exception e) {
-         	String errorMsg = "LoginPageController.moveToProductPager\n" + e.getMessage();
+         	String errorMsg = "SearchPageController.moveToProductPager\n" + e.getMessage();
          	e.printStackTrace();
          	IOHandler.getInstance().showAlert(errorMsg);
          	IOHandler.getInstance().log(errorMsg);
@@ -263,12 +270,12 @@ public class SearchPageController implements Initializable {
 class Data{
 	private StringProperty image;
     private StringProperty name;
-    private StringProperty price;
+    private StringProperty price; 
  
     public Data(StringProperty image, StringProperty name, StringProperty price) {
         this.name = name;
         this.image=image;
-        this.price=price;     
+        this.price=price;           
     }
  
     public StringProperty nameProperty() {
@@ -277,8 +284,8 @@ class Data{
     public StringProperty priceProperty() {
         return price;
     }
-    public StringProperty getName() {
-		return name;
+    public String getName() {
+		return name.toString();
 	}
    
  
