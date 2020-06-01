@@ -3,6 +3,7 @@ package controller;
 import java.awt.Desktop;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.animation.TranslateTransition;
@@ -10,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -19,6 +21,10 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import model.BigCategory;
+import model.Category;
+import task.BigCategoryTask;
+import task.CategoryTask;
 import utility.IOHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -53,37 +59,73 @@ public class ProductPageController implements Initializable {
 	    void OnGoToMainBtnClicked(ActionEvent event) {
 	    	 try {
 	             //메인페이지로 이동하기
-	             Stage primaryStage = (Stage) Image.getScene().getWindow();
+	             Stage primaryStage = (Stage) zzimBtn.getScene().getWindow();
 	             Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
 	             //Scene scene = new Scene(root);    	    
 	            	
-	             Pane root1 = new Pane();
-	        	 	root1.setPrefSize(600, 400);    
-	        	 	VBox menu = new VBox();
-	        	 
-	        	    menu.setId("menu");
-	        	    menu.prefHeightProperty().bind(root1.heightProperty());
+	             //Pane root1 = new Pane();            
+	             HBox root1 = new HBox();
+	        	 	root1.setPrefSize(600, 400);         	 	
+	        	 	VBox menu = new VBox();       	 	 	 	
+	        	 	root1.setAlignment(Pos.CENTER);
+	        	    menu.setId("menu");       	    
 	        	    menu.setPrefWidth(100);
 
-	        	   // 나중에 동적으로 추가해줘야 할듯
-	        	    MenuItem menuItem1 = new MenuItem("A-1");
-	        	    MenuItem menuItem2 = new MenuItem("A-2");
-	        	 	MenuItem menuItem3 = new MenuItem("A-3");
-	        	 	MenuButton menuBtn1= new MenuButton("카테고리 A", null,menuItem1,menuItem2,menuItem3);
-	        	 	
-	        	 	MenuItem menuItem4 = new MenuItem("B-1");
-	     	    MenuItem menuItem5 = new MenuItem("B-2");
-	     	 	MenuItem menuItem6 = new MenuItem("B-3");
-	     	 	MenuButton menuBtn2= new MenuButton("카테고리 B", null,menuItem4,menuItem5,menuItem6);
-	        	 	menu.getChildren().addAll(menuBtn1,menuBtn2);
+	        	   // 나중에 동적으로 추가해줘야 할듯       	   
+	        	    BigCategoryTask a= new BigCategoryTask();
+	        	    ArrayList<BigCategory> bigCategoryList= a.getAllBigCategory();
+//	        	    ArrayList<BigCategory> bigCategoryList= new ArrayList<BigCategory>();
+//	        	    bigCategoryList.add(new BigCategory("1", "의류"));
+//	        	    bigCategoryList.add(new BigCategory("2", "식품"));
+//	        	    bigCategoryList.add(new BigCategory("3", "건강"));       	    
+	        	    
+	        	    
+	        	    CategoryTask b = new CategoryTask();
+//	       	    ArrayList<Category> categoryList = b.findByBigCategory(bigCategory);
+//	       	    ArrayList<Category> categoryList = new ArrayList<Category>();
+//	       	    categoryList.add(new Category("1", "남성상의", "1"));
+//	       	    categoryList.add(new Category("2", "여상상의", "1"));
+//	       	    categoryList.add(new Category("3", "남성하의", "1"));
+	        	    MenuButton menuBtn = new MenuButton();
+	        	    menuBtn.setId("menuBtn");
+	        	   
+	     	    
+	        	    for(int i=0;i<bigCategoryList.size();i++)
+	        	    {
+	        	    	menuBtn = new MenuButton(bigCategoryList.get(i).getName());           	    	
+	        	    	ArrayList<Category> categoryList = b.findByBigCategory(bigCategoryList.get(i));
+	        	    	for(int j=0;j<categoryList.size();j++)
+	        	    	{
+	        	    		MenuItem mitem = new MenuItem(categoryList.get(j).getName());
+	        	    		mitem.setOnAction( evt -> {
+	        	    			//카테고리 클릭했을 때 액션       	    			
+	        	    			IOHandler.getInstance().showAlert(mitem.getText());
+	        	    		});
+	        	    		menuBtn.getItems().addAll(mitem);       	    	
+	        	    	}
+	        	    	menu.getChildren().add(menuBtn);
+	        	    }
+	        	   
+	        	   
+	        	    
+	        	    
+//	        	    MenuItem menuItem1 = new MenuItem("A-1");
+//	        	    MenuItem menuItem2 = new MenuItem("A-2");
+//	        	 	MenuItem menuItem3 = new MenuItem("A-3");
+//	        	 	MenuButton menuBtn1= new MenuButton("카테고리 A", null,menuItem1,menuItem2,menuItem3);       	 
+//	        	 	
+//	        	 	MenuItem menuItem4 = new MenuItem("B-1");
+//	     	    MenuItem menuItem5 = new MenuItem("B-2");
+//	     	 	MenuItem menuItem6 = new MenuItem("B-3");
+//	     	 	MenuButton menuBtn2= new MenuButton("카테고리 B", null,menuItem4,menuItem5,menuItem6);
+//	        	 	menu.getChildren().addAll(menuBtn1,menuBtn2);
 
 	        	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
 	        	    menu.setTranslateX(-90);
-	        	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);
-
+	        	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);       	    
 	        	    menuTranslation.setFromX(-90);
 	        	    menuTranslation.setToX(0);
-
+	        	    
 	        	    menu.setOnMouseEntered(evt -> {
 	        	        menuTranslation.setRate(1);
 	        	        menuTranslation.play();
@@ -93,7 +135,7 @@ public class ProductPageController implements Initializable {
 	        	        menuTranslation.play();
 	        	    });
 	        	    
-	        	    root1.getChildren().addAll(root,menu);
+	        	    root1.getChildren().addAll(menu,root);
 	        	    Scene scene = new Scene(root1);
 	        	    
 	        	    
