@@ -234,12 +234,22 @@ public class ProductPageController implements Initializable {
     			min = p.get(i).getPrice();
     		}
     	}
-    	
-    	if(p.get(0).getThumbnail().length()>0)
+    	String thum = p.get(0).getThumbnail();
+    	if(thum!=null)
     	{
-			Image img = new Image(p.get(0).getThumbnail());
-			Image.setImage(img); 	 
+    		if(thum.length()>0)
+    		{
+    			Image img = new Image(p.get(0).getThumbnail());
+    			Image.setImage(img); 	
+    		}
     	}
+    	
+    	
+//    	if(p.get(0).getThumbnail().length()>0)
+//    	{
+//			Image img = new Image(p.get(0).getThumbnail());
+//			Image.setImage(img); 	 
+//    	}
 		pName.setText(p.get(0).getProductName());
 		Double price =p.get(0).getPrice();
 		pPrice.setText(price.toString());
