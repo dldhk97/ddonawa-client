@@ -12,33 +12,33 @@ public class FavoriteTask {
 	public void addFavorite(Account account, Product product, double targetPrice) {
 		try {
 			// 계정 존재하는지 체크
-			AccountTask at = new AccountTask();
-			ArrayList<Account> accountList = at.searchById(account.getId());
-			
-			if(accountList == null) {
-				IOHandler.getInstance().log("찜 목록에 추가할 계정이 존재하지 않습니다.");
-				return;
-			}
-			
-			// 상품정보 존재하는지 체크
-			ProductTask pt = new ProductTask();
-			ArrayList<Product> productList = pt.searchByProductName(product.getName());
-			
-			if(productList == null) {
-				IOHandler.getInstance().log("찜 목록에 추가할 상품이 존재하지 않습니다.");
-				return;
-			}
-			
-			// 찜목록에 추가
-			FavoriteManager fm = new FavoriteManager();
-			int cnt = fm.insert(new Favorite(accountList.get(0).getId(), productList.get(0).getName(), targetPrice));
-			
-			if(cnt > 0) {
-				IOHandler.getInstance().log("찜 추가에 성공하였습니다.");
-			}
-			else {
-				IOHandler.getInstance().log("찜 추가에 실패했습니다.");
-			}
+//			AccountTask at = new AccountTask();
+//			ArrayList<Account> accountList = at.searchById(account.getId());
+//			
+//			if(accountList == null) {
+//				IOHandler.getInstance().log("찜 목록에 추가할 계정이 존재하지 않습니다.");
+//				return;
+//			}
+//			
+//			// 상품정보 존재하는지 체크
+//			ProductTask pt = new ProductTask();
+//			ArrayList<Product> productList = pt.searchByProductName(product.getName());
+//			
+//			if(productList == null) {
+//				IOHandler.getInstance().log("찜 목록에 추가할 상품이 존재하지 않습니다.");
+//				return;
+//			}
+//			
+//			// 찜목록에 추가
+//			FavoriteManager fm = new FavoriteManager();
+//			int cnt = fm.insert(new Favorite(accountList.get(0).getId(), productList.get(0).getName(), targetPrice));
+//			
+//			if(cnt > 0) {
+//				IOHandler.getInstance().log("찜 추가에 성공하였습니다.");
+//			}
+//			else {
+//				IOHandler.getInstance().log("찜 추가에 실패했습니다.");
+//			}
 		}
 		catch(Exception e) {
 			IOHandler.getInstance().log("FavoriteTask.addFavorite"+ e);

@@ -10,7 +10,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Account;
-import task.AccountTask;
+import network.NetworkManager;
+import network.Protocol;
+import network.ProtocolType;
+import network.Response;
+import network.ResponseType;
 import utility.IOHandler;
 
 public class RegisterPageController {
@@ -54,20 +58,28 @@ public class RegisterPageController {
         		return;
         	}
         	
-        	AccountTask a = new AccountTask();        	
-        	Account inputAccount = new Account(IdField.getText(), PwdField.getText());
-        	boolean isRegisterSucceed = a.register(inputAccount);      	
-                 
-            
-            // 서버로부터 결과 나오면 처리
-            if(isRegisterSucceed) {
-            	IOHandler.getInstance().showAlert("회원가입 성공");
-            	// 사용자 정보를 서버로부터 받아와서 저장해야 할 듯? 사용자명이라던가(지금은 없지만 있으면 좋을듯?), 찜 목록이라던가             	
-                moveToLoginPage();
-            }
-            else {
-            	//IOHandler.getInstance().showAlert("회원가입 실패");            	
-            }
+        	        	
+        	Account account = new Account(IdField.getText(), PwdField.getText());
+        	
+        	Protocol received = NetworkManager.getInstance().connect(ProtocolType.REGISTER, (Object)account);		// 대강 이런식으로...
+        	Response response = received.getResponse();
+        	ResponseType type = response.getType();
+        	
+        	switch(type) {
+        	case SUCCEED:
+        		IOHandler.getInstance().showAlert("회원가입에 성공했습니다");
+        		moveToLoginPage();
+        		break;
+        	case FAILED:
+        		IOHandler.getInstance().showAlert(response.getMessage());
+        		break;
+        	case ERROR:
+        		IOHandler.getInstance().showAlert("오류 발생");
+        		break;
+        	case UNKNOWN:
+        		IOHandler.getInstance().showAlert("인투 디 언노온~");
+        		break;
+        	}	 	
             
         }
         catch(Exception e) {

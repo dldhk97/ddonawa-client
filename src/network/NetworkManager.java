@@ -29,25 +29,27 @@ public class NetworkManager {
 	private final static int PORT = Integer.parseInt(NetworkInfo.SERVER_PORT.toString());
 	private final static int TIMEOUT = Integer.parseInt(NetworkInfo.SERVER_TIMEOUT.toString());
 	
-	
-	
-	public LoginResult tryLogin(Account account) {
+	// 이거쓰세요
+	public Protocol connect(ProtocolType type, Object object) {
+		// 소켓 생성함.
 		Socket clientSocket = createSocket();
 		if(clientSocket == null) {
-			return LoginResult.ERROR;
+			return new Protocol(type, Direction.TO_CLIENT, new Response(ResponseType.SERVER_NOT_RESPONSE, "서버 응답 없음"), null);
 		}
 		
 		try {
-			Protocol sendProtocol = new Protocol(ProtocolType.LOGIN, Direction.TO_SERVER, account);
 			
+			// 전달할 프로토콜 생성 및 전송
+			Protocol sendProtocol = new Protocol(type, Direction.TO_SERVER, null, object);
 			sendData(clientSocket, sendProtocol);
+			
+			// 데이터 수신
 			Protocol receieved = getData(clientSocket);
 			
-			LoginResult result = (LoginResult) receieved.getObject();
-			
 			clientSocket.close();
-			if(result != null) {
-				return result;
+			
+			if(receieved != null) {
+				return receieved;
 			}
 		}
 		catch (Exception e) {
@@ -63,9 +65,9 @@ public class NetworkManager {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		return LoginResult.UNKNOWN;
+		return null;
 	}
+	
 	
 	// ----------------------------------- 프로토콜 ------------------------------//
 	

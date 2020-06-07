@@ -27,9 +27,11 @@ import javafx.util.Duration;
 import model.Account;
 import model.BigCategory;
 import model.Category;
-import network.LoginResult;
 import network.NetworkManager;
-import task.AccountTask;
+import network.Protocol;
+import network.ProtocolType;
+import network.Response;
+import network.ResponseType;
 import task.BigCategoryTask;
 import task.CategoryTask;
 import utility.IOHandler;
@@ -96,22 +98,18 @@ public class LoginPageController {
         	Account account = new Account(idField.getText(), pwField.getText());
         	
         	// 대충 서버 연결해서 아이디 비번 체크
+        	Protocol received = NetworkManager.getInstance().connect(ProtocolType.LOGIN, (Object)account);		// 대강 이런식으로...
+        	Response response = received.getResponse();
+        	ResponseType type = response.getType();
         	
-        	LoginResult isLoginSucceed = NetworkManager.getInstance().tryLogin(account);		// 대강 이런식으로...
-        		
-        	
-        	switch(isLoginSucceed) {
+        	switch(type) {
         	case SUCCEED:
         		IOHandler.getInstance().showAlert("로그인에 성공했습니다");
         		 moveToMain();
         		break;
-        	case ID_NOT_FOUND:   
-        		IOHandler.getInstance().showAlert("아이디를 찾을 수 없습니다.");
+        	case FAILED:
+        		IOHandler.getInstance().showAlert(response.getMessage());
         		idField.requestFocus();
-        		break;
-        	case WRONG_PW:
-        		IOHandler.getInstance().showAlert("비밀번호가 틀렸습니다.");
-        		pwField.requestFocus();
         		break;
         	case ERROR:
         		IOHandler.getInstance().showAlert("오류 발생");
