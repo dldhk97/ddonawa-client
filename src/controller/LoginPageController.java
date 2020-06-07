@@ -111,13 +111,10 @@ public class LoginPageController {
         		IOHandler.getInstance().showAlert(response.getMessage());
         		idField.requestFocus();
         		break;
-        	case ERROR:
-        		IOHandler.getInstance().showAlert("오류 발생");
+        	default:
+        		IOHandler.getInstance().showAlert(response.getMessage());
         		break;
-        	case UNKNOWN:
-        		IOHandler.getInstance().showAlert("인투 디 언노온~");
-        		break;
-        	}	 	
+        	}
         	           
         	//사용자 정보 저장해야할 듯
         	

@@ -32,13 +32,19 @@ public class NetworkManager {
 	// 이거쓰세요
 	public Protocol connect(ProtocolType type, Object object) {
 		// 소켓 생성함.
-		Socket clientSocket = createSocket();
+		Socket clientSocket = null;
+		try {
+			clientSocket = createSocket();			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		if(clientSocket == null) {
 			return new Protocol(type, Direction.TO_CLIENT, new Response(ResponseType.SERVER_NOT_RESPONSE, "서버 응답 없음"), null);
 		}
 		
 		try {
-			
 			// 전달할 프로토콜 생성 및 전송
 			Protocol sendProtocol = new Protocol(type, Direction.TO_SERVER, null, object);
 			sendData(clientSocket, sendProtocol);
@@ -46,8 +52,10 @@ public class NetworkManager {
 			// 데이터 수신
 			Protocol receieved = getData(clientSocket);
 			
+			// 소켓 종료
 			clientSocket.close();
 			
+			// 프로토콜 반환
 			if(receieved != null) {
 				return receieved;
 			}

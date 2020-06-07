@@ -73,11 +73,8 @@ public class RegisterPageController {
         	case FAILED:
         		IOHandler.getInstance().showAlert(response.getMessage());
         		break;
-        	case ERROR:
-        		IOHandler.getInstance().showAlert("오류 발생");
-        		break;
-        	case UNKNOWN:
-        		IOHandler.getInstance().showAlert("인투 디 언노온~");
+        	default:
+        		IOHandler.getInstance().showAlert(response.getMessage());
         		break;
         	}	 	
             
