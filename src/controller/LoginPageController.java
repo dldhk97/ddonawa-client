@@ -27,6 +27,7 @@ import javafx.util.Duration;
 import model.Account;
 import model.BigCategory;
 import model.Category;
+import network.NetworkManager;
 import task.AccountTask;
 import task.BigCategoryTask;
 import task.CategoryTask;
@@ -92,12 +93,14 @@ public class LoginPageController {
         		return;
         	}
         	
-        	// 대충 서버 연결해서 아이디 비번 체크
-        	// boolean isLoginSucceed = NetworkManager.login(inputUserId, inputUserPw);		// 대강 이런식으로...
-        	Account inputAccount= new Account(idField.getText(), pwField.getText());
-        	AccountTask a= new AccountTask();        	
+        	Account account = new Account(idField.getText(), pwField.getText());
         	
-        	switch(a.tryLogin(inputAccount)) {
+        	// 대충 서버 연결해서 아이디 비번 체크
+        	
+        	LoginResult isLoginSucceed = NetworkManager.getInstance().tryLogin(account);		// 대강 이런식으로...
+        		
+        	
+        	switch(isLoginSucceed) {
         	case SUCCEED:
         		IOHandler.getInstance().showAlert("로그인에 성공했습니다");
         		 moveToMain();
