@@ -27,11 +27,11 @@ import javafx.util.Duration;
 import model.Account;
 import model.BigCategory;
 import model.Category;
+import network.LoginResult;
 import network.NetworkManager;
 import task.AccountTask;
 import task.BigCategoryTask;
 import task.CategoryTask;
-import task.LoginResult;
 import utility.IOHandler;
 
 public class LoginPageController {
@@ -108,6 +108,7 @@ public class LoginPageController {
         	case ID_NOT_FOUND:   
         		IOHandler.getInstance().showAlert("아이디를 찾을 수 없습니다.");
         		idField.requestFocus();
+        		break;
         	case WRONG_PW:
         		IOHandler.getInstance().showAlert("비밀번호가 틀렸습니다.");
         		pwField.requestFocus();

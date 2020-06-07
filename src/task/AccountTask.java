@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import db.AccountManager;
 import model.Account;
-import task.LoginResult;
+import network.LoginResult;
 import utility.IOHandler;
 
 public class AccountTask {

@@ -2,11 +2,14 @@ package network;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import model.Account;
-import task.LoginResult;
 
 public class NetworkManager {
 	// 싱글톤 패턴
@@ -22,23 +25,58 @@ public class NetworkManager {
 		return _instance;
 	}
 	
+	private final static String SERVER_IP = NetworkInfo.SERVER_IP.toString();
+	private final static int PORT = Integer.parseInt(NetworkInfo.SERVER_PORT.toString());
+	private final static int TIMEOUT = Integer.parseInt(NetworkInfo.SERVER_TIMEOUT.toString());
+	
+	
+	
 	public LoginResult tryLogin(Account account) {
+		Socket clientSocket = createSocket();
+		if(clientSocket == null) {
+			return LoginResult.ERROR;
+		}
 		
-		int port = Integer.parseInt(NetworkInfo.SERVER_PORT.toString());
-		int timeout = Integer.parseInt(NetworkInfo.SERVER_TIMEOUT.toString());
 		try {
-			Socket socket = new Socket(NetworkInfo.SERVER_IP.toString(), port);
-			socket.setSoTimeout(timeout);
+			Protocol sendProtocol = new Protocol(ProtocolType.LOGIN, Direction.TO_SERVER, account);
 			
-			InputStream data = socket.getInputStream();
+			sendData(clientSocket, sendProtocol);
+			Protocol receieved = getData(clientSocket);
 			
-			byte[] receieved = new byte[100];
-			data.read(receieved);
+			LoginResult result = (LoginResult) receieved.getObject();
 			
-			socket.close();
+			clientSocket.close();
+			if(result != null) {
+				return result;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// 미워도 다시 한번 닫기
+		try {
+			if(clientSocket != null) {
+				clientSocket.close();
+			}			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return LoginResult.UNKNOWN;
+	}
+	
+	// ----------------------------------- 프로토콜 ------------------------------//
+	
+	private Protocol getData(Socket s){
+		try {
 			
-			System.out.println(new String(receieved));
+			ObjectInputStream os = new ObjectInputStream(s.getInputStream());
 			
+			Protocol p = (Protocol) os.readObject();
+			
+			return p;
 		} 
 		catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -46,7 +84,39 @@ public class NetworkManager {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 		
-		return LoginResult.UNKNOWN;
+		return null;
+	}
+	
+	private boolean sendData(Socket s, Protocol p) {
+		try {
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
+			objectOutputStream.writeObject(p);
+			objectOutputStream.flush();
+			
+			return true;
+		} 
+		catch (UnknownHostException e) {
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	private Socket createSocket() {
+		try {
+			Socket socket = new Socket(SERVER_IP, PORT);
+			socket.setSoTimeout(TIMEOUT);
+			return socket;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

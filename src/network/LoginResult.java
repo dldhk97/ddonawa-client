@@ -1,4 +1,4 @@
-package task;
+package network;
 
 import java.io.Serializable;
 
