@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import model.Account;
+import utility.IOHandler;
 
 public class NetworkManager {
 	// 싱글톤 패턴
@@ -34,11 +35,16 @@ public class NetworkManager {
 	// 결과는 Protocol로 반환되고 Protocol에는 Type, Response(반응 타입, 메시지), Object가 있음.
 	// type은 요청했던 게 무엇인지, 반응은 성공/실패/오류/모름 과 메시지를 담고 있고, Object는 배열이 될수도, 객체가 될 수도, null이 될 수도 있음.
 	// 반응은 무조건 담겨져 나오기 때문에, 반응에서 SUCCEED 인지 체크하고, Object를 알맞게 형변환해서 사용하면 됨.
-	public Protocol connect(ProtocolType type, Object object) {
+	public Protocol connect(ProtocolType type, Object object) throws Exception{
 		return connect(type, null, object);
 	}
 	
-	public Protocol connect(ProtocolType type, EventType eventType, Object object) {
+	public Protocol connect(ProtocolType type, EventType eventType, Object object) throws Exception {
+		if(type == ProtocolType.EVENT && eventType == null) {
+			IOHandler.getInstance().log("프로토콜이 이벤트인데, 이벤트 타입이 없습니다!");
+			throw new Exception();
+		}	
+		
 		// 소켓 생성함.
 		Socket clientSocket = null;
 		try {

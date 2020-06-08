@@ -10,33 +10,24 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Account;
-import model.BigCategory;
-import model.Category;
 import network.NetworkManager;
 import network.Protocol;
 import network.ProtocolType;
 import network.Response;
 import network.ResponseType;
-import task.BigCategoryTask;
-import task.CategoryTask;
 import utility.IOHandler;
 
-public class LoginPageController {
+public class LoginPageController extends SidebarController {
 
 	@FXML
     private TextField idField;
@@ -144,55 +135,12 @@ public class LoginPageController {
        	 	root1.setAlignment(Pos.CENTER);
        	    menu.setId("menu");       	    
        	    menu.setPrefWidth(100);
-
-       	   // 나중에 동적으로 추가해줘야 할듯       	   
-       	    BigCategoryTask a= new BigCategoryTask();
-       	    ArrayList<BigCategory> bigCategoryList= a.getAllBigCategory();
-//       	    ArrayList<BigCategory> bigCategoryList= new ArrayList<BigCategory>();
-//       	    bigCategoryList.add(new BigCategory("1", "의류"));
-//       	    bigCategoryList.add(new BigCategory("2", "식품"));
-//       	    bigCategoryList.add(new BigCategory("3", "건강"));       	    
        	    
-       	    
-       	    CategoryTask b = new CategoryTask();
-//      	    ArrayList<Category> categoryList = b.findByBigCategory(bigCategory);
-//      	    ArrayList<Category> categoryList = new ArrayList<Category>();
-//      	    categoryList.add(new Category("1", "남성상의", "1"));
-//      	    categoryList.add(new Category("2", "여상상의", "1"));
-//      	    categoryList.add(new Category("3", "남성하의", "1"));
-       	    MenuButton menuBtn = new MenuButton();
-       	    menuBtn.setId("menuBtn");
-       	   
-    	    
-       	    for(int i=0;i<bigCategoryList.size();i++)
-       	    {
-       	    	menuBtn = new MenuButton(bigCategoryList.get(i).getName());           	    	
-       	    	ArrayList<Category> categoryList = b.findByBigCategory(bigCategoryList.get(i));
-       	    	for(int j=0;j<categoryList.size();j++)
-       	    	{
-       	    		MenuItem mitem = new MenuItem(categoryList.get(j).getName());
-       	    		mitem.setOnAction( evt -> {
-       	    			//카테고리 클릭했을 때 액션       	    			
-       	    			IOHandler.getInstance().showAlert(mitem.getText());
-       	    		});
-       	    		menuBtn.getItems().addAll(mitem);       	    	
-       	    	}
-       	    	menu.getChildren().add(menuBtn);
+       	    // 대분류 버튼과 그 예하의 아이템들 추가
+       	    ArrayList<MenuButton> menuButtons = getMenuButtonList();
+       	    for(MenuButton mb : menuButtons) {
+       	    	menu.getChildren().add(mb);
        	    }
-       	   
-       	   
-       	    
-       	    
-//       	    MenuItem menuItem1 = new MenuItem("A-1");
-//       	    MenuItem menuItem2 = new MenuItem("A-2");
-//       	 	MenuItem menuItem3 = new MenuItem("A-3");
-//       	 	MenuButton menuBtn1= new MenuButton("카테고리 A", null,menuItem1,menuItem2,menuItem3);       	 
-//       	 	
-//       	 	MenuItem menuItem4 = new MenuItem("B-1");
-//    	    MenuItem menuItem5 = new MenuItem("B-2");
-//    	 	MenuItem menuItem6 = new MenuItem("B-3");
-//    	 	MenuButton menuBtn2= new MenuButton("카테고리 B", null,menuItem4,menuItem5,menuItem6);
-//       	 	menu.getChildren().addAll(menuBtn1,menuBtn2);
 
        	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
        	    menu.setTranslateX(-90);

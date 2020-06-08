@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import db.CollectedInfoManager;
 import javafx.animation.TranslateTransition;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,24 +21,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.TableViewSelectionModel;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.BigCategory;
-import model.Category;
 import model.CollectedInfo;
 import model.Product;
 import model.Tuple;
@@ -49,11 +39,9 @@ import network.Protocol;
 import network.ProtocolType;
 import network.Response;
 import network.ResponseType;
-import task.BigCategoryTask;
-import task.CategoryTask;
 import utility.IOHandler;
 
-public class SearchPageController implements Initializable {
+public class SearchPageController extends SidebarController implements Initializable {
 
     @FXML
     private Button SearchBtn;
@@ -77,97 +65,54 @@ public class SearchPageController implements Initializable {
 
     @FXML
     void OnGoToMainBtnClicked(ActionEvent event) {    	
-    		 try {
-    	            //메인페이지로 이동하기
-    	            Stage primaryStage = (Stage) goToMainBtn.getScene().getWindow();
-    	            Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
-    	            //Scene scene = new Scene(root);    	    
-    	           	
-    	            //Pane root1 = new Pane();            
-    	            HBox root1 = new HBox();
-    	       	 	root1.setPrefSize(600, 400);         	 	
-    	       	 	VBox menu = new VBox();       	 	 	 	
-    	       	 	root1.setAlignment(Pos.CENTER);
-    	       	    menu.setId("menu");       	    
-    	       	    menu.setPrefWidth(100);
-
-    	       	   // 나중에 동적으로 추가해줘야 할듯       	   
-    	       	    BigCategoryTask a= new BigCategoryTask();
-    	       	    ArrayList<BigCategory> bigCategoryList= a.getAllBigCategory();
-//    	       	    ArrayList<BigCategory> bigCategoryList= new ArrayList<BigCategory>();
-//    	       	    bigCategoryList.add(new BigCategory("1", "의류"));
-//    	       	    bigCategoryList.add(new BigCategory("2", "식품"));
-//    	       	    bigCategoryList.add(new BigCategory("3", "건강"));       	    
-    	       	    
-    	       	    
-    	       	    CategoryTask b = new CategoryTask();
-//    	      	    ArrayList<Category> categoryList = b.findByBigCategory(bigCategory);
-//    	      	    ArrayList<Category> categoryList = new ArrayList<Category>();
-//    	      	    categoryList.add(new Category("1", "남성상의", "1"));
-//    	      	    categoryList.add(new Category("2", "여상상의", "1"));
-//    	      	    categoryList.add(new Category("3", "남성하의", "1"));
-    	       	    MenuButton menuBtn = new MenuButton();
-    	       	    menuBtn.setId("menuBtn");
-    	       	   
-    	    	    
-    	       	    for(int i=0;i<bigCategoryList.size();i++)
-    	       	    {
-    	       	    	menuBtn = new MenuButton(bigCategoryList.get(i).getName());           	    	
-    	       	    	ArrayList<Category> categoryList = b.findByBigCategory(bigCategoryList.get(i));
-    	       	    	for(int j=0;j<categoryList.size();j++)
-    	       	    	{
-    	       	    		MenuItem mitem = new MenuItem(categoryList.get(j).getName());
-    	       	    		mitem.setOnAction( evt -> {
-    	       	    			//카테고리 클릭했을 때 액션       	    			
-    	       	    			IOHandler.getInstance().showAlert(mitem.getText());
-    	       	    		});
-    	       	    		menuBtn.getItems().addAll(mitem);       	    	
-    	       	    	}
-    	       	    	menu.getChildren().add(menuBtn);
-    	       	    }
-    	       	   
-    	       	   
-    	       	    
-    	       	    
-//    	       	    MenuItem menuItem1 = new MenuItem("A-1");
-//    	       	    MenuItem menuItem2 = new MenuItem("A-2");
-//    	       	 	MenuItem menuItem3 = new MenuItem("A-3");
-//    	       	 	MenuButton menuBtn1= new MenuButton("카테고리 A", null,menuItem1,menuItem2,menuItem3);       	 
-//    	       	 	
-//    	       	 	MenuItem menuItem4 = new MenuItem("B-1");
-//    	    	    MenuItem menuItem5 = new MenuItem("B-2");
-//    	    	 	MenuItem menuItem6 = new MenuItem("B-3");
-//    	    	 	MenuButton menuBtn2= new MenuButton("카테고리 B", null,menuItem4,menuItem5,menuItem6);
-//    	       	 	menu.getChildren().addAll(menuBtn1,menuBtn2);
-
-    	       	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
-    	       	    menu.setTranslateX(-90);
-    	       	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);       	    
-    	       	    menuTranslation.setFromX(-90);
-    	       	    menuTranslation.setToX(0);
-    	       	    
-    	       	    menu.setOnMouseEntered(evt -> {
-    	       	        menuTranslation.setRate(1);
-    	       	        menuTranslation.play();
-    	       	    });
-    	       	    menu.setOnMouseExited(evt -> {
-    	       	        menuTranslation.setRate(-1);
-    	       	        menuTranslation.play();
-    	       	    });
-    	       	    
-    	       	    root1.getChildren().addAll(menu,root);
-    	       	    Scene scene = new Scene(root1);
-    	       	    
-    	       	    
-    	            primaryStage.setScene(scene);
-    	            primaryStage.setTitle("또나와 메인화면");
-    	            primaryStage.show();
-
-    	        } catch (Exception e) {
-    	        	String errorMsg = "LoginPageController.moveToMain\n" + e.getMessage();
-    	        	IOHandler.getInstance().showAlert(errorMsg);
-    	        	IOHandler.getInstance().log(errorMsg);
-    	        }    	 
+    	try {
+	            //메인페이지로 이동하기
+	            Stage primaryStage = (Stage) goToMainBtn.getScene().getWindow();
+	            Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
+	            //Scene scene = new Scene(root);    	    
+	           	
+	            //Pane root1 = new Pane();            
+	            HBox root1 = new HBox();
+	       	 	root1.setPrefSize(600, 400);         	 	
+	       	 	VBox menu = new VBox();       	 	 	 	
+	       	 	root1.setAlignment(Pos.CENTER);
+	       	    menu.setId("menu");       	    
+	       	    menu.setPrefWidth(100);
+	
+	       	    // 대분류 버튼과 그 예하의 아이템들 추가
+	       	    ArrayList<MenuButton> menuButtons = getMenuButtonList();
+	       	    for(MenuButton mb : menuButtons) {
+	       	    	menu.getChildren().add(mb);
+	       	    }
+	
+	       	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
+	       	    menu.setTranslateX(-90);
+	       	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);       	    
+	       	    menuTranslation.setFromX(-90);
+	       	    menuTranslation.setToX(0);
+	       	    
+	       	    menu.setOnMouseEntered(evt -> {
+	       	        menuTranslation.setRate(1);
+	       	        menuTranslation.play();
+	       	    });
+	       	    menu.setOnMouseExited(evt -> {
+	       	        menuTranslation.setRate(-1);
+	       	        menuTranslation.play();
+	       	    });
+	       	    
+	       	    root1.getChildren().addAll(menu,root);
+	       	    Scene scene = new Scene(root1);
+	       	    
+	       	    
+	            primaryStage.setScene(scene);
+	            primaryStage.setTitle("또나와 메인화면");
+	            primaryStage.show();
+	
+	        } catch (Exception e) {
+	        	String errorMsg = "LoginPageController.moveToMain\n" + e.getMessage();
+	        	IOHandler.getInstance().showAlert(errorMsg);
+	        	IOHandler.getInstance().log(errorMsg);
+	        }    	 
     }
 
     @FXML
@@ -304,14 +249,14 @@ public class SearchPageController implements Initializable {
 
 
 // 임의로 쓰는 데이터 객체, 테이블뷰에 쓰려면 StringProperty나 IntProperty 형식으로 써야함
-// Product랑 CollectedInfo 저장하게 수정함.
+// Product랑 CollectedInfo 저장하게 수정함. 수정할 일 없으면 final 쓰십쇼
 class Data{
 	private final Product product;
 	private final CollectedInfo collectedInfo;
 	
-	private StringProperty image;
-    private StringProperty name;
-    private StringProperty price; 
+	private final StringProperty image;
+	private final StringProperty name;
+    private final StringProperty price; 
  
     public Data(final Product product, final CollectedInfo collectedInfo) {
     	this.product = product;
@@ -333,6 +278,9 @@ class Data{
     public StringProperty nameProperty() {
         return name;
     }   
+    public StringProperty imageProperty() {
+		return image;
+	}
     public StringProperty priceProperty() {
         return price;
     }
