@@ -40,15 +40,11 @@ public class MainPageController implements Initializable {
     void OnSearchPressed(KeyEvent event) {
     	if(event.getCode()==KeyCode.ENTER)
     	{
-    		IOHandler.getInstance().showAlert("검색버튼 클릭");
     		moveToSearchPage();
     	}
     }
     @FXML
-    void OnClikedSearchBtn(ActionEvent event) {
-    	//검색 수행
-    	IOHandler.getInstance().showAlert("검색버튼 클릭");    	   
-    	    	
+    void OnClikedSearchBtn(ActionEvent event) {   	
     	moveToSearchPage();
     }
 
@@ -136,6 +132,19 @@ public class MainPageController implements Initializable {
     //검색 화면으로 이동하는 메소드
     private void moveToSearchPage() {
        try {
+    	    String searchWord = searchField.getText();
+    	    
+    	    // 검색어 없으면 검색 안함
+    	    int wordLength = searchWord.length();
+    	    if(searchWord == null || wordLength < 1) {
+    	    	return;
+    	    }
+    	    else if(wordLength < 2) {
+    	    	// 한 글자만 검색하면 검색결과 너무 많음. 2글자 이상 검색해라.
+    	    	IOHandler.getInstance().showAlert("검색어는 2자리 이상 입력해주십시오.");
+    	    	return;
+    	    }
+    	    
             //검색페이지로 이동하기
             Stage primaryStage = (Stage) searchBtn.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/SearchPage.fxml"));
@@ -143,7 +152,7 @@ public class MainPageController implements Initializable {
             Scene scene = new Scene(root);
             
             SearchPageController sController = loader.getController();
-            boolean canIMove = sController.transferProduct(searchField.getText());
+            boolean canIMove = sController.transferProduct(searchWord);
             
            if(canIMove) {
         	   primaryStage.setScene(scene);
