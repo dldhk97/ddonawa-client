@@ -29,6 +29,12 @@ import model.BigCategory;
 import model.Category;
 import model.CollectedInfo;
 import model.Product;
+import network.EventType;
+import network.NetworkManager;
+import network.Protocol;
+import network.ProtocolType;
+import network.Response;
+import network.ResponseType;
 import task.BigCategoryTask;
 import task.CategoryTask;
 import utility.IOHandler;
@@ -214,49 +220,52 @@ public class ProductPageController implements Initializable {
 //    	}
     	zzimBar.setVisible(true);
     }
-    public void DataTransfer(String s)
+    public void DataTransfer(Product p)
     {
     	try {
-	    	CollectedInfoManager cManager = new CollectedInfoManager();
-	    	ArrayList<CollectedInfo> p = cManager.findByProductName(s);
-	    	if(p.size()<1)
+    		// 사용자가 선택한 상품정보를 서버에게 넘겨주고, 수집정보를 가져온다.
+    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.GET_PRODUCT_DETAIL, (Object)p);
+        	Response response = received.getResponse();
+        	ResponseType type = response.getResponseType();
+        	
+        	ArrayList<CollectedInfo> collectedInfoList = null;
+        	
+        	switch(type) {
+        	case SUCCEED:
+        		collectedInfoList = (ArrayList<CollectedInfo>) received.getObject();
+        		break;
+        	case FAILED:
+        		break;
+    		default:
+    			break;
+        	}
+        	
+	    	if(collectedInfoList == null || collectedInfoList.size() < 1)
 	    	{
 	    		System.out.println("선택한 상품을 검색에서 못받아옴");
 	    	}    	
-	    	System.out.println("테스트1");
-	    	Double min = Double.MAX_VALUE;
-	    	for(int i=0;i<p.size();i++)
+	    	
+	    	// 썸네일 구하기
+	    	CollectedInfo recentInfo = collectedInfoList.get(0);
+	    	String thumb = recentInfo.getThumbnail();
+	    	if(thumb != null && thumb.length() > 0)
 	    	{
-	    		System.out.println(p.get(i));
-	    		if(p.get(i).getPrice() < min)
-	    		{
-	    			min = p.get(i).getPrice();
-	    		}
-	    	}
-	    	String thum = p.get(0).getThumbnail();
-	    	if(thum!=null)
-	    	{
-	    		if(thum.length()>0)
-	    		{
-	    			Image img = new Image(p.get(0).getThumbnail());
-	    			Image.setImage(img); 	
-	    		}
+	    		Image img = new Image(recentInfo.getThumbnail());
+    			Image.setImage(img);
 	    	}
 	    	
+	    	// 표시할 정보 명시 및 최저가 구하기
+	    	String productName = p.getName();
+	    	Double productPrice = recentInfo.getPrice();
+	    	Double min = getMinPrice(collectedInfoList);
 	    	
-	//    	if(p.get(0).getThumbnail().length()>0)
-	//    	{
-	//			Image img = new Image(p.get(0).getThumbnail());
-	//			Image.setImage(img); 	 
-	//    	}
-			pName.setText(p.get(0).getProductName());
-			Double price =p.get(0).getPrice();
-			pPrice.setText(price.toString());
+			pName.setText(productName);
+			pPrice.setText(productPrice.toString());
 			pMinPrice.setText(min.toString());
 			
 			Image.setOnMouseClicked(event->{
 				try {
-					Desktop.getDesktop().browse(new URI(p.get(0).getUrl()));
+					Desktop.getDesktop().browse(new URI(recentInfo.getUrl()));
 				} 
 				catch (Exception e) 
 				{
@@ -268,6 +277,16 @@ public class ProductPageController implements Initializable {
     		IOHandler.getInstance().log("ProductPageController.DataTransfer : " +e);
     	}    	
     	
+    }
+    
+    public Double getMinPrice(ArrayList<CollectedInfo> list) {
+    	double min = Double.MAX_VALUE;
+    	for(CollectedInfo c : list) {
+    		if(c.getPrice() < min) {
+    			min = c.getPrice();
+    		}
+    	}
+    	return min;
     }
     
 }

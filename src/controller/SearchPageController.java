@@ -179,11 +179,11 @@ public class SearchPageController implements Initializable {
     @FXML
     void OnProductClicked(MouseEvent event) {
     	if(event.getClickCount()>1)
-    	{    		  		
-    		String s = table.getSelectionModel().getSelectedItem().getName();
-    		s=s.substring(23, s.length()-1);    		
-    		System.out.println(s+" clicked!");  
-    		moveToProductPage(s);
+    	{    		  	
+    		// 사용자가 선택한 상품
+    		Product target = table.getSelectionModel().getSelectedItem().getProduct();    		
+    		System.out.println(target.getName() + " clicked!");  
+    		moveToProductPage(target);
     	}
     }
 
@@ -207,7 +207,7 @@ public class SearchPageController implements Initializable {
 //    	table.setItems(myList);
     }
     
-    private void moveToProductPage(String s)
+    private void moveToProductPage(Product p)
     {
     	 try {           
              Stage primaryStage = (Stage) table.getScene().getWindow();            
@@ -216,10 +216,10 @@ public class SearchPageController implements Initializable {
              Scene scene = new Scene(root);
              
              ProductPageController pController = loader.getController();
-             pController.DataTransfer(s);
+             pController.DataTransfer(p);
              
              primaryStage.setScene(scene);
-             primaryStage.setTitle(s);
+             primaryStage.setTitle(p.getName());
              primaryStage.show();
 
          } catch (Exception e) {
