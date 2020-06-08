@@ -217,52 +217,54 @@ public class ProductPageController implements Initializable {
     public void DataTransfer(String s)
     {
     	try {
-    	CollectedInfoManager cManager = new CollectedInfoManager();
-    	ArrayList<CollectedInfo> p = cManager.findByProductName(s);
-    	if(p.size()<1)
-    	{
-    		System.out.println("선택한 상품을 검색에서 못받아옴");
-    	}    	
-    	System.out.println("테스트1");
-    	Double min = Double.MAX_VALUE;
-    	for(int i=0;i<p.size();i++)
-    	{
-    		System.out.println(p.get(i));
-    		if(p.get(i).getPrice() < min)
-    		{
-    			min = p.get(i).getPrice();
-    		}
+	    	CollectedInfoManager cManager = new CollectedInfoManager();
+	    	ArrayList<CollectedInfo> p = cManager.findByProductName(s);
+	    	if(p.size()<1)
+	    	{
+	    		System.out.println("선택한 상품을 검색에서 못받아옴");
+	    	}    	
+	    	System.out.println("테스트1");
+	    	Double min = Double.MAX_VALUE;
+	    	for(int i=0;i<p.size();i++)
+	    	{
+	    		System.out.println(p.get(i));
+	    		if(p.get(i).getPrice() < min)
+	    		{
+	    			min = p.get(i).getPrice();
+	    		}
+	    	}
+	    	String thum = p.get(0).getThumbnail();
+	    	if(thum!=null)
+	    	{
+	    		if(thum.length()>0)
+	    		{
+	    			Image img = new Image(p.get(0).getThumbnail());
+	    			Image.setImage(img); 	
+	    		}
+	    	}
+	    	
+	    	
+	//    	if(p.get(0).getThumbnail().length()>0)
+	//    	{
+	//			Image img = new Image(p.get(0).getThumbnail());
+	//			Image.setImage(img); 	 
+	//    	}
+			pName.setText(p.get(0).getProductName());
+			Double price =p.get(0).getPrice();
+			pPrice.setText(price.toString());
+			pMinPrice.setText(min.toString());
+			
+			Image.setOnMouseClicked(event->{
+				try {
+					Desktop.getDesktop().browse(new URI(p.get(0).getUrl()));
+				} 
+				catch (Exception e) 
+				{
+					e.printStackTrace();
+				} 
+			});
     	}
-    	String thum = p.get(0).getThumbnail();
-    	if(thum!=null)
-    	{
-    		if(thum.length()>0)
-    		{
-    			Image img = new Image(p.get(0).getThumbnail());
-    			Image.setImage(img); 	
-    		}
-    	}
-    	
-    	
-//    	if(p.get(0).getThumbnail().length()>0)
-//    	{
-//			Image img = new Image(p.get(0).getThumbnail());
-//			Image.setImage(img); 	 
-//    	}
-		pName.setText(p.get(0).getProductName());
-		Double price =p.get(0).getPrice();
-		pPrice.setText(price.toString());
-		pMinPrice.setText(min.toString());
-		
-		Image.setOnMouseClicked(event->{
-			try {
-				Desktop.getDesktop().browse(new URI(p.get(0).getUrl()));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-		});
-    	}catch(Exception e) {
+    	catch(Exception e) {
     		IOHandler.getInstance().log("ProductPageController.DataTransfer : " +e);
     	}    	
     	

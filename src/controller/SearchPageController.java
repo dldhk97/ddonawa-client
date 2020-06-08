@@ -42,6 +42,7 @@ import model.BigCategory;
 import model.Category;
 import model.CollectedInfo;
 import model.Product;
+import model.Tuple;
 import network.EventType;
 import network.NetworkManager;
 import network.Protocol;
@@ -244,16 +245,18 @@ public class SearchPageController implements Initializable {
     		
     		// 서버 연결해서 상품명으로 검색하고, 결과 받아온다.
     		String searchWord = s;
+    		
+    		// 검색 시 서버로부터 상품정보 - 최신수집정보가 쌍(Tuple)으로 이루어진 결과 배열을 받음.
     		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.SEARCH, (Object)searchWord);
         	Response response = received.getResponse();
         	ResponseType type = response.getResponseType();
         	
-        	ArrayList<Product> productList = null;
+        	ArrayList<Tuple<Product, CollectedInfo>> receievedList = null;
         	
         	// 응답 결과에 따라 알아서 처리하셈.
         	switch(response.getResponseType()) {
 	        	case SUCCEED:
-	        		productList = (ArrayList<Product>) received.getObject();
+	        		receievedList = (ArrayList<Tuple<Product, CollectedInfo>>) received.getObject();
 	        		break;
 	        	case FAILED:
 	        		break;
@@ -266,23 +269,24 @@ public class SearchPageController implements Initializable {
         	}
         	
         	// 서버에서 받아온 값이 있을 때만 처리
-        	if(productList == null) {
+        	if(receievedList == null) {
         		IOHandler.getInstance().showAlert("검색 결과가 없습니다.");
         		return;
         	}
         	
         	//밑에 부분이 init 부분으로 가면 왜 안되는지 아직 파악못함
-        	CollectedInfoManager cManager = new CollectedInfoManager();
         	ObservableList<Data> myList = FXCollections.observableArrayList();
         	
-        	for(int i=0;i<productList.size();i++) {
-        		String pName= productList.get(i).getName();
-        		ArrayList<CollectedInfo> p = cManager.findByProductName(pName);
-        		Double price =p.get(0).getPrice();
+        	for(Tuple<Product, CollectedInfo> t : receievedList) {
+        		// 상품정보 꺼냄
+        		Product p = t.getFirst();
         		
-        		 myList.add(new Data(new SimpleStringProperty("사진"),new SimpleStringProperty(productList.get(i).getName()),new SimpleStringProperty(price.toString())));
-        		 
-        	}     	
+        		// 상품의 수집정보(최신임)을 가져온다.
+        		CollectedInfo ci = t.getSecond();
+        		
+        		Data newData = new Data(p, ci);
+        		myList.add(newData);
+        	}
         	     	
              ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
              PriceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());    	
@@ -295,21 +299,35 @@ public class SearchPageController implements Initializable {
 			e.printStackTrace();
 		}
     }
-	
     
 }
 
 
 // 임의로 쓰는 데이터 객체, 테이블뷰에 쓰려면 StringProperty나 IntProperty 형식으로 써야함
+// Product랑 CollectedInfo 저장하게 수정함.
 class Data{
+	private final Product product;
+	private final CollectedInfo collectedInfo;
+	
 	private StringProperty image;
     private StringProperty name;
     private StringProperty price; 
  
-    public Data(StringProperty image, StringProperty name, StringProperty price) {
-        this.name = name;
-        this.image=image;
-        this.price=price;           
+    public Data(final Product product, final CollectedInfo collectedInfo) {
+    	this.product = product;
+    	this.collectedInfo = collectedInfo;
+    	
+        this.name = new SimpleStringProperty(product.getName());
+        this.image= new SimpleStringProperty("사진");
+        this.price= new SimpleStringProperty(String.valueOf(collectedInfo.getPrice()));
+    }
+    
+    public Product getProduct() {
+    	return product;
+    }
+    
+    public CollectedInfo getCollectedInfo() {
+    	return this.collectedInfo;
     }
  
     public StringProperty nameProperty() {
