@@ -235,13 +235,11 @@ public class SearchPageController implements Initializable {
 		
 	}
     
-	public void transferProduct(String s)
+	public boolean transferProduct(String s)
     {		
     	searchField.setText(s);    	
     	try {
-    		// TODO Auto-generated method stub
     		searchField.requestFocus();
-//    		ProductTask pTask = new ProductTask();
     		
     		// 서버 연결해서 상품명으로 검색하고, 결과 받아온다.
     		String searchWord = s;
@@ -254,7 +252,7 @@ public class SearchPageController implements Initializable {
         	ArrayList<Tuple<Product, CollectedInfo>> receievedList = null;
         	
         	// 응답 결과에 따라 알아서 처리하셈.
-        	switch(response.getResponseType()) {
+        	switch(type) {
 	        	case SUCCEED:
 	        		receievedList = (ArrayList<Tuple<Product, CollectedInfo>>) received.getObject();
 	        		break;
@@ -269,9 +267,9 @@ public class SearchPageController implements Initializable {
         	}
         	
         	// 서버에서 받아온 값이 있을 때만 처리
-        	if(receievedList == null) {
+        	if(receievedList == null || receievedList.size() < 1) {
         		IOHandler.getInstance().showAlert("검색 결과가 없습니다.");
-        		return;
+        		return false;
         	}
         	
         	//밑에 부분이 init 부분으로 가면 왜 안되는지 아직 파악못함
@@ -288,15 +286,17 @@ public class SearchPageController implements Initializable {
         		myList.add(newData);
         	}
         	     	
-             ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-             PriceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());    	
+            ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+            PriceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());    	
           
         	table.setItems(myList);
+        	return true;
 		}
 		catch(Exception e)
 		{
 			IOHandler.getInstance().log("상품목록 초기화"+ e);
 			e.printStackTrace();
+			return false;
 		}
     }
     

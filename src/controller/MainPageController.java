@@ -143,14 +143,13 @@ public class MainPageController implements Initializable {
             Scene scene = new Scene(root);
             
             SearchPageController sController = loader.getController();
-            sController.transferProduct(searchField.getText());
+            boolean canIMove = sController.transferProduct(searchField.getText());
             
-           
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("또나와 검색결과");
-            primaryStage.show();
-            
-            
+           if(canIMove) {
+        	   primaryStage.setScene(scene);
+               primaryStage.setTitle("또나와 검색결과");
+               primaryStage.show();
+           }
 
         } catch (Exception e) {
         	String errorMsg = "MainPageController.moveToSearchPage\n"+ e.getMessage();
