@@ -31,7 +31,6 @@ import model.CollectedInfo;
 import model.Product;
 import task.BigCategoryTask;
 import task.CategoryTask;
-import task.ProductTask;
 import utility.IOHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

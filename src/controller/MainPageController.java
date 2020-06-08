@@ -26,7 +26,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Product;
-import task.ProductTask;
 import utility.IOHandler;
 
 public class MainPageController implements Initializable {
@@ -42,7 +41,7 @@ public class MainPageController implements Initializable {
     	if(event.getCode()==KeyCode.ENTER)
     	{
     		IOHandler.getInstance().showAlert("검색버튼 클릭");
-    		//테스트
+    		moveToSearchPage();
     	}
     }
     @FXML

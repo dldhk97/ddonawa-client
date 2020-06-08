@@ -35,6 +35,10 @@ public class NetworkManager {
 	// type은 요청했던 게 무엇인지, 반응은 성공/실패/오류/모름 과 메시지를 담고 있고, Object는 배열이 될수도, 객체가 될 수도, null이 될 수도 있음.
 	// 반응은 무조건 담겨져 나오기 때문에, 반응에서 SUCCEED 인지 체크하고, Object를 알맞게 형변환해서 사용하면 됨.
 	public Protocol connect(ProtocolType type, Object object) {
+		return connect(type, null, object);
+	}
+	
+	public Protocol connect(ProtocolType type, EventType eventType, Object object) {
 		// 소켓 생성함.
 		Socket clientSocket = null;
 		try {
@@ -45,12 +49,12 @@ public class NetworkManager {
 		}
 		
 		if(clientSocket == null) {
-			return new Protocol(type, Direction.TO_CLIENT, new Response(ResponseType.SERVER_NOT_RESPONSE, "서버 응답 없음"), null);
+			return new Protocol(type, Direction.TO_CLIENT, eventType, new Response(ResponseType.SERVER_NOT_RESPONSE, "서버 응답 없음"), null);
 		}
 		
 		try {
 			// 전달할 프로토콜 생성 및 전송
-			Protocol sendProtocol = new Protocol(type, Direction.TO_SERVER, null, object);
+			Protocol sendProtocol = new Protocol(type, Direction.TO_SERVER, eventType, null, object);
 			sendData(clientSocket, sendProtocol);
 			
 			// 데이터 수신

@@ -42,9 +42,14 @@ import model.BigCategory;
 import model.Category;
 import model.CollectedInfo;
 import model.Product;
+import network.EventType;
+import network.NetworkManager;
+import network.Protocol;
+import network.ProtocolType;
+import network.Response;
+import network.ResponseType;
 import task.BigCategoryTask;
 import task.CategoryTask;
-import task.ProductTask;
 import utility.IOHandler;
 
 public class SearchPageController implements Initializable {
@@ -235,8 +240,36 @@ public class SearchPageController implements Initializable {
     	try {
     		// TODO Auto-generated method stub
     		searchField.requestFocus();
-    		ProductTask pTask = new ProductTask();
-        	ArrayList<Product> productList = pTask.searchByProductName(s);
+//    		ProductTask pTask = new ProductTask();
+    		
+    		// 서버 연결해서 상품명으로 검색하고, 결과 받아온다.
+    		String searchWord = s;
+    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.SEARCH, (Object)searchWord);
+        	Response response = received.getResponse();
+        	ResponseType type = response.getResponseType();
+        	
+        	ArrayList<Product> productList = null;
+        	
+        	// 응답 결과에 따라 알아서 처리하셈.
+        	switch(response.getResponseType()) {
+	        	case SUCCEED:
+	        		productList = (ArrayList<Product>) received.getObject();
+	        		break;
+	        	case FAILED:
+	        		break;
+	        	case SERVER_NOT_RESPONSE:
+	        		break;
+	        	case ERROR:
+	        		break;
+        		default:
+        			break;
+        	}
+        	
+        	// 서버에서 받아온 값이 있을 때만 처리
+        	if(productList == null) {
+        		IOHandler.getInstance().showAlert("검색 결과가 없습니다.");
+        		return;
+        	}
         	
         	//밑에 부분이 init 부분으로 가면 왜 안되는지 아직 파악못함
         	CollectedInfoManager cManager = new CollectedInfoManager();
@@ -255,11 +288,12 @@ public class SearchPageController implements Initializable {
              PriceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());    	
           
         	table.setItems(myList);
-    		}
-    		catch(Exception e)
-    		{
-    			IOHandler.getInstance().log("상품목록 초기화"+ e);
-    		}
+		}
+		catch(Exception e)
+		{
+			IOHandler.getInstance().log("상품목록 초기화"+ e);
+			e.printStackTrace();
+		}
     }
 	
     

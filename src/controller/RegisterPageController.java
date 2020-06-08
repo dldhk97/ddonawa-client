@@ -63,7 +63,7 @@ public class RegisterPageController {
         	
         	Protocol received = NetworkManager.getInstance().connect(ProtocolType.REGISTER, (Object)account);		// 대강 이런식으로...
         	Response response = received.getResponse();
-        	ResponseType type = response.getType();
+        	ResponseType type = response.getResponseType();
         	
         	switch(type) {
         	case SUCCEED:

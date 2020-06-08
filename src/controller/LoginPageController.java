@@ -97,10 +97,10 @@ public class LoginPageController {
         	
         	Account account = new Account(idField.getText(), pwField.getText());
         	
-        	// 대충 서버 연결해서 아이디 비번 체크
+        	// 대충 서버 연결해서 아이디 비번 체크하고 결과받음
         	Protocol received = NetworkManager.getInstance().connect(ProtocolType.LOGIN, (Object)account);		// 대강 이런식으로...
         	Response response = received.getResponse();
-        	ResponseType type = response.getType();
+        	ResponseType type = response.getResponseType();
         	
         	switch(type) {
         	case SUCCEED:
