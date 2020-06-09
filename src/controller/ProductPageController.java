@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.animation.TranslateTransition;
+import javafx.beans.binding.ObjectExpression;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,7 +19,11 @@ import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -28,12 +36,21 @@ import network.ProtocolType;
 import network.Response;
 import network.ResponseType;
 import utility.IOHandler;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 
 
@@ -64,6 +81,15 @@ public class ProductPageController extends SidebarController implements Initiali
 	    
 	    @FXML
 	    private Button goToMainBtn;
+	    
+	    @FXML
+	    private LineChart<String, Double> lineChart;
+
+	    @FXML
+	    private CategoryAxis categoryAxisBottom;
+
+	    @FXML
+	    private NumberAxis numberAxisLeft;
 
 	    @FXML
 	    void OnGoToMainBtnClicked(ActionEvent event) {
@@ -117,8 +143,12 @@ public class ProductPageController extends SidebarController implements Initiali
 	         	IOHandler.getInstance().log(errorMsg);
 	         }
 	    }
+	    
     Popup popup;
     TextArea textArea;
+    
+    ArrayList<CollectedInfo> collectedInfoList = null;
+    XYChart.Series<String, Double> series;
     
     //일단 이미지 클릭시 링크로 기본웹브라우저 통해서 접근
     //URI 오류는 보통 링크를 틀렸을때 많이 나옴 , http:// 붙였는지 등등 확인 필요
@@ -140,6 +170,8 @@ public class ProductPageController extends SidebarController implements Initiali
 //		Image img = new Image(s);
 //		Image.setImage(img); 	    
 	    
+//    	setupChart();
+//    	setupToolTip();
 	}
     
     @FXML
@@ -174,8 +206,6 @@ public class ProductPageController extends SidebarController implements Initiali
     		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.GET_PRODUCT_DETAIL, (Object)p);
         	Response response = received.getResponse();
         	ResponseType type = response.getResponseType();
-        	
-        	ArrayList<CollectedInfo> collectedInfoList = null;
         	
         	switch(type) {
         	case SUCCEED:
@@ -219,6 +249,8 @@ public class ProductPageController extends SidebarController implements Initiali
 					e.printStackTrace();
 				} 
 			});
+			
+			setupChart();
     	}
     	catch(Exception e) {
     		IOHandler.getInstance().log("ProductPageController.DataTransfer : " +e);
@@ -234,6 +266,51 @@ public class ProductPageController extends SidebarController implements Initiali
     		}
     	}
     	return min;
+    }
+    
+    private void setupChart() {
+    	if(collectedInfoList == null) {
+    		return;
+    	}
+    	
+    	try {
+    		lineChart.getData().add(new Series<>(createData(collectedInfoList)));
+    	    
+//    	    
+//    	    list.add(series);
+//    	    
+//    	    lineChart.setData(list);
+    	    lineChart.setCursor(Cursor.CROSSHAIR);
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+	}
+    
+    private static ObservableList<XYChart.Data<String, Double>> createData(ArrayList<CollectedInfo> collectedInfoList) {
+    	ObservableList<XYChart.Data<String, Double>> list = FXCollections.observableArrayList();
+    	
+    	int size = collectedInfoList.size();
+    	for(int i = size - 1 ; i >= 0 ; i--) {
+    		CollectedInfo ci = collectedInfoList.get(i);
+        	XYChart.Data<String, Double> data = new XYChart.Data<>(ci.getCollectedDate().toString(), ci.getPrice());
+            data.setNode(createDataNode(data.YValueProperty()));
+            list.add(data);
+        }
+        return list;
+    }
+    
+    private static Node createDataNode(ObjectExpression<Double> value) {
+        Label label = new Label();
+        label.textProperty().bind(value.asString("%,.2f"));
+
+        Pane pane = new Pane(label);
+        pane.setShape(new Circle(6.0));
+        pane.setScaleShape(false);
+
+        label.translateYProperty().bind(label.heightProperty().divide(500.0));
+
+        return pane;
     }
     
 }

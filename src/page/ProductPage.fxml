@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -17,7 +18,10 @@
          <children>
             <VBox alignment="CENTER">
                <children>
-                  <ImageView fx:id="Image" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#OnProductImageClicked" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="Image" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#OnProductImageClicked" pickOnBounds="true" preserveRatio="true">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></ImageView>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="이미지를 클릭 시 해당 사이트로 이동합니다" />
                </children>
                <HBox.margin>
@@ -85,12 +89,12 @@
             <Button fx:id="zzimRegister" mnemonicParsing="false" onAction="#OnZzimRegisterBtnClicked" text="찜" />
          </children>
       </HBox>
-      <LineChart>
+      <LineChart fx:id="lineChart" title="가격 추이">
         <xAxis>
-          <CategoryAxis side="BOTTOM" />
+          <CategoryAxis fx:id="categoryAxisBottom" side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis side="LEFT" />
+          <NumberAxis fx:id="numberAxisLeft" side="LEFT" />
         </yAxis>
       </LineChart>
       <Button fx:id="goToMainBtn" mnemonicParsing="false" onAction="#OnGoToMainBtnClicked" text="메인화면" />
