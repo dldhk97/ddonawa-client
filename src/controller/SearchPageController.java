@@ -123,7 +123,11 @@ public class SearchPageController extends SidebarController implements Initializ
     	if(event.getClickCount()>1)
     	{    		  	
     		// 사용자가 선택한 상품
-    		Product target = table.getSelectionModel().getSelectedItem().getProduct();    		
+    		Data selected = table.getSelectionModel().getSelectedItem();
+    		if(selected == null) {
+    			return;
+    		}
+    		Product target = selected.getProduct();    		
     		System.out.println(target.getName() + " clicked!");  
     		moveToProductPage(target);
     	}

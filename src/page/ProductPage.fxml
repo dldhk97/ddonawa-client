@@ -89,7 +89,7 @@
             <Button fx:id="zzimRegister" mnemonicParsing="false" onAction="#OnZzimRegisterBtnClicked" text="찜" />
          </children>
       </HBox>
-      <LineChart fx:id="lineChart" title="가격 추이">
+      <LineChart fx:id="lineChart" title="가격 추이" VBox.vgrow="ALWAYS">
         <xAxis>
           <CategoryAxis fx:id="categoryAxisBottom" side="BOTTOM" />
         </xAxis>

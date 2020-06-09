@@ -275,11 +275,6 @@ public class ProductPageController extends SidebarController implements Initiali
     	
     	try {
     		lineChart.getData().add(new Series<>(createData(collectedInfoList)));
-    	    
-//    	    
-//    	    list.add(series);
-//    	    
-//    	    lineChart.setData(list);
     	    lineChart.setCursor(Cursor.CROSSHAIR);
     	}
     	catch (Exception e) {
@@ -290,6 +285,7 @@ public class ProductPageController extends SidebarController implements Initiali
     private static ObservableList<XYChart.Data<String, Double>> createData(ArrayList<CollectedInfo> collectedInfoList) {
     	ObservableList<XYChart.Data<String, Double>> list = FXCollections.observableArrayList();
     	
+    	// 역순으로(날짜순으로)
     	int size = collectedInfoList.size();
     	for(int i = size - 1 ; i >= 0 ; i--) {
     		CollectedInfo ci = collectedInfoList.get(i);
@@ -308,7 +304,8 @@ public class ProductPageController extends SidebarController implements Initiali
         pane.setShape(new Circle(6.0));
         pane.setScaleShape(false);
 
-        label.translateYProperty().bind(label.heightProperty().divide(500.0));
+//        pane.translateYProperty().bind(pane.heightProperty().divide(1.5));
+        label.translateYProperty().bind(label.heightProperty().divide(1.5).subtract(-10));
 
         return pane;
     }
