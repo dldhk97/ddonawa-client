@@ -2,8 +2,12 @@ package controller;
 
 import java.util.ArrayList;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.stage.Stage;
 import model.BigCategory;
 import model.Category;
 import model.CollectedInfo;
@@ -45,6 +49,8 @@ public class SidebarController {
 					menuItem.setOnAction(event->{
 						// 카테고리 클릭하면 그걸로 검색해서 서버에서 결과 받아옴.
 						ArrayList<Tuple<Product, CollectedInfo>> received = doSearch(c);
+//						moveToSearchPage(received);
+						searchEventListener.onEvent(received);
 					});
 					
 					menuButton.getItems().add(menuItem);
@@ -145,6 +151,43 @@ public class SidebarController {
     		e.printStackTrace();
 		}
     	return null;
+    }
+    
+  //검색 화면으로 이동하는 메소드
+    private void moveToSearchPage(final ArrayList<Tuple<Product, CollectedInfo>> received) {
+       try {
+            //검색페이지로 이동하기
+            Stage primaryStage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/SearchPage.fxml"));
+            Parent root =  loader.load();        
+            Scene scene = new Scene(root);
+            
+            SearchPageController sController = loader.getController();
+            boolean canIMove = sController.transferProduct(received);
+            
+           if(canIMove) {
+        	   primaryStage.setScene(scene);
+               primaryStage.setTitle("또나와 검색결과");
+               primaryStage.show();
+           }
+
+        } catch (Exception e) {
+        	String errorMsg = "MainPageController.moveToSearchPage\n"+ e.getMessage();
+        	IOHandler.getInstance().showAlert(errorMsg);
+        	IOHandler.getInstance().log(errorMsg);
+        }
+    }
+    
+    private ISearchEventListener searchEventListener;
+    
+    // 데이터 전달을 위한 리스너 설정
+    public void setOnEventListener(ISearchEventListener listener){
+        searchEventListener = listener;
+    }
+
+    // 데이터 전달을 위한 인터페이스
+    public interface ISearchEventListener {
+        void onEvent(ArrayList<Tuple<Product, CollectedInfo>> received);
     }
 	
 }

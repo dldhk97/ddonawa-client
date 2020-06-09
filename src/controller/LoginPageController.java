@@ -1,11 +1,14 @@
 package controller;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,6 +23,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Account;
+import model.CollectedInfo;
+import model.Product;
+import model.Tuple;
 import network.NetworkManager;
 import network.Protocol;
 import network.ProtocolType;
@@ -27,7 +33,7 @@ import network.Response;
 import network.ResponseType;
 import utility.IOHandler;
 
-public class LoginPageController extends SidebarController {
+public class LoginPageController {
 
 	@FXML
     private TextField idField;
@@ -137,7 +143,9 @@ public class LoginPageController extends SidebarController {
        	    menu.setPrefWidth(100);
        	    
        	    // 대분류 버튼과 그 예하의 아이템들 추가
-       	    ArrayList<MenuButton> menuButtons = getMenuButtonList();
+       	    SidebarController sc = new SidebarController();
+       	    sc.setOnEventListener(new SearchEventListener(this));
+       	    ArrayList<MenuButton> menuButtons = sc.getMenuButtonList();
        	    for(MenuButton mb : menuButtons) {
        	    	menu.getChildren().add(mb);
        	    }
@@ -189,6 +197,58 @@ public class LoginPageController extends SidebarController {
         	IOHandler.getInstance().log(errorMsg);
         }
     }
+
+    
+    ArrayList<Tuple<Product, CollectedInfo>> received;
+    //검색 화면으로 이동하는 메소드
+    private void moveToSearchPage(final ArrayList<Tuple<Product, CollectedInfo>> received) {
+       try {
+    	   
+    	   if(received == null || received.size() < 1) {
+    		   return;
+    	   }
+    	   
+            //검색페이지로 이동하기
+            Stage primaryStage = new Stage();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/SearchPage.fxml"));
+            Parent root =  loader.load();        
+            Scene scene = new Scene(root);
+            
+            SearchPageController sController = loader.getController();
+            boolean canIMove = sController.transferProduct(received);
+            
+           if(canIMove) {
+        	   primaryStage.setScene(scene);
+               primaryStage.setTitle("또나와 검색결과");
+               primaryStage.show();
+           }
+
+        } catch (Exception e) {
+        	String errorMsg = "MainPageController.moveToSearchPage\n"+ e.getMessage();
+        	IOHandler.getInstance().showAlert(errorMsg);
+        	IOHandler.getInstance().log(errorMsg);
+        }
+    }
+    
+   
+    
+    // 데이터 수신을 위한 리스너
+    private class SearchEventListener implements SidebarController.ISearchEventListener {
+    	LoginPageController lpc;
+    	
+    	public SearchEventListener(LoginPageController lpc) {
+    		this.lpc = lpc; 
+    	}
+
+		@Override
+		public void onEvent(ArrayList<Tuple<Product, CollectedInfo>> received) {
+			lpc.moveToSearchPage(received);
+		}
+
+        
+    }
+
+	
     
    
 }

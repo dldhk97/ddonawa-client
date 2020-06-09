@@ -91,8 +91,6 @@ public class MainPageController implements Initializable {
     //검색 화면으로 이동하는 메소드
     private void moveToSearchPage(final ArrayList<Tuple<Product, CollectedInfo>> received) {
        try {
-    	    
-    	    
             //검색페이지로 이동하기
             Stage primaryStage = (Stage) searchBtn.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/SearchPage.fxml"));
