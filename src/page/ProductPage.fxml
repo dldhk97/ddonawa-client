@@ -28,7 +28,7 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </VBox>
-            <VBox alignment="CENTER">
+            <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                <children>
                   <HBox alignment="TOP_CENTER">
                      <children>
@@ -37,7 +37,7 @@
                               <Insets bottom="20.0" right="10.0" />
                            </HBox.margin>
                         </Text>
-                        <TextField fx:id="pName" editable="false" />
+                        <TextField fx:id="pName" editable="false" HBox.hgrow="ALWAYS" />
                      </children>
                      <VBox.margin>
                         <Insets />
@@ -50,7 +50,7 @@
                               <Insets bottom="20.0" right="10.0" />
                            </HBox.margin>
                         </Text>
-                        <TextField fx:id="pPrice" editable="false" />
+                        <TextField fx:id="pPrice" editable="false" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox>
@@ -60,19 +60,22 @@
                               <Insets right="10.0" />
                            </HBox.margin>
                         </Text>
-                        <TextField fx:id="pMinPrice" editable="false" />
+                        <TextField fx:id="pMinPrice" editable="false" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
+                  <Button fx:id="zzimBtn" mnemonicParsing="false" onAction="#OnZzimBtnClicked" text="찜 하기">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                     <graphic>
+                        <HBox />
+                     </graphic>
+                  </Button>
                </children>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-            </VBox>
-            <Button fx:id="zzimBtn" mnemonicParsing="false" onAction="#OnZzimBtnClicked" text="찜 하기">
                <HBox.margin>
-                  <Insets left="80.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
-            </Button>
+            </VBox>
          </children>
          <VBox.margin>
             <Insets bottom="20.0" />

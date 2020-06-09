@@ -180,7 +180,36 @@ public class SearchPageController extends SidebarController implements Initializ
 	public void initialize(URL location, ResourceBundle resources) {
 		
 	}
+	
+	public boolean transferProduct(ArrayList<Tuple<Product, CollectedInfo>> receievedList) {
+		try {
+			//밑에 부분이 init 부분으로 가면 왜 안되는지 아직 파악못함
+        	ObservableList<Data> myList = FXCollections.observableArrayList();
+        	
+        	for(Tuple<Product, CollectedInfo> t : receievedList) {
+        		// 상품정보 꺼냄
+        		Product p = t.getFirst();
+        		
+        		// 상품의 수집정보(최신임)을 가져온다.
+        		CollectedInfo ci = t.getSecond();
+        		
+        		Data newData = new Data(p, ci);
+        		myList.add(newData);
+        	}
+        	     	
+            ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+            PriceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());    	
+          
+        	table.setItems(myList);
+        	return true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
     
+	@Deprecated
 	public boolean transferProduct(String s)
     {		
     	searchField.setText(s);    	

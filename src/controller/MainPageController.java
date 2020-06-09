@@ -25,7 +25,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.CollectedInfo;
 import model.Product;
+import model.Tuple;
+import network.EventType;
+import network.NetworkManager;
+import network.Protocol;
+import network.ProtocolType;
+import network.Response;
+import network.ResponseType;
 import utility.IOHandler;
 
 public class MainPageController implements Initializable {
@@ -36,16 +44,19 @@ public class MainPageController implements Initializable {
     @FXML
     private TextField searchField;
     
+    // 키보드
     @FXML
     void OnSearchPressed(KeyEvent event) {
     	if(event.getCode()==KeyCode.ENTER)
     	{
-    		moveToSearchPage();
+    		onSearch();
     	}
     }
+    
+    // 버튼
     @FXML
     void OnClikedSearchBtn(ActionEvent event) {   	
-    	moveToSearchPage();
+//    	onSearch();
     }
 
     @FXML
@@ -58,92 +69,29 @@ public class MainPageController implements Initializable {
 
     }
     
+    // 버튼
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
 //		// 머품목 갯수 받아와서 버튼 만드러줌
-//    	//ArrayList<BigCategory> aList
-//    	int tempNum=3;
-//    	
-//    	ArrayList<Button> btnList= new ArrayList<Button>();
-//    	
-//    	for(int i=0; i<tempNum;i++)
-//    	{
-//    		btnList.add(new Button());     	    		
-//    	}
-//    	
-//    	hbox1.getChildren().addAll(btnList);
-//    	btnList.get(0).setText("카테고리1");   	
-//    	btnList.get(1).setText("카테고리2");
-//    	btnList.get(2).setText("카테고리3");
-//    	hbox1.setMargin(btnList.get(0), new Insets(10));  
-//    	hbox1.setMargin(btnList.get(1), new Insets(20));
-//    	//btnList.get(0).setOnMouseDragOver(event -> {System.out.println("테스트");});
-//    	//Hover 이벤트 주는거
-//    	    
-//    	btnList.get(0).addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-//    	      @Override
-//    	      public void handle(MouseEvent event) {
-//    	        System.out.println("카테고리1 Hover");
-//    	      }
-//    	    });
-
-    		
-//    	 Pane root = new Pane();
-//    	 root.setPrefSize(400, 300);    
-//    	 VBox menu = new VBox();
-//    	 
-//    	    menu.setId("menu");
-//    	    menu.prefHeightProperty().bind(root.heightProperty());
-//    	    menu.setPrefWidth(200);
-//
-//    	    menu.getChildren().addAll(new Button("Something"), new Button("Something else"), new Button("Something different"));
-//
-//    	   // menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
-//    	    menu.setTranslateX(-190);
-//    	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);
-//
-//    	    menuTranslation.setFromX(-190);
-//    	    menuTranslation.setToX(0);
-//
-//    	    menu.setOnMouseEntered(evt -> {
-//    	        menuTranslation.setRate(1);
-//    	        menuTranslation.play();
-//    	    });
-//    	    menu.setOnMouseExited(evt -> {
-//    	        menuTranslation.setRate(-1);
-//    	        menuTranslation.play();
-//    	    });
-//    	    
-//    	    root.getChildren().addAll(menu);
-//    	    Scene scene = new Scene(root);    	    
-//    	    
-//    	    stage.setScene(scene);
-//    	    stage.show();    	
     	searchBtn.setOnAction(event->{
-    		IOHandler.getInstance().showAlert("검색버튼 클릭");
-        	
-        	String s = searchField.getText();
-        	System.out.println("입력값 :" +s);
-        	moveToSearchPage();
+    		onSearch();
     	});
 	}
     
+    private void onSearch() {
+    	String searchWord = searchField.getText();
+    	ArrayList<Tuple<Product, CollectedInfo>> received =doSearch(searchWord);
+    	if(received != null) {
+    		moveToSearchPage(received);
+    	}
+    }
+    
+    // --------------------------- 로직  ------------------------------------------ //
 
     //검색 화면으로 이동하는 메소드
-    private void moveToSearchPage() {
+    private void moveToSearchPage(final ArrayList<Tuple<Product, CollectedInfo>> received) {
        try {
-    	    String searchWord = searchField.getText();
     	    
-    	    // 검색어 없으면 검색 안함
-    	    int wordLength = searchWord.length();
-    	    if(searchWord == null || wordLength < 1) {
-    	    	return;
-    	    }
-    	    else if(wordLength < 2) {
-    	    	// 한 글자만 검색하면 검색결과 너무 많음. 2글자 이상 검색해라.
-    	    	IOHandler.getInstance().showAlert("검색어는 2자리 이상 입력해주십시오.");
-    	    	return;
-    	    }
     	    
             //검색페이지로 이동하기
             Stage primaryStage = (Stage) searchBtn.getScene().getWindow();
@@ -152,7 +100,7 @@ public class MainPageController implements Initializable {
             Scene scene = new Scene(root);
             
             SearchPageController sController = loader.getController();
-            boolean canIMove = sController.transferProduct(searchWord);
+            boolean canIMove = sController.transferProduct(received);
             
            if(canIMove) {
         	   primaryStage.setScene(scene);
@@ -165,6 +113,55 @@ public class MainPageController implements Initializable {
         	IOHandler.getInstance().showAlert(errorMsg);
         	IOHandler.getInstance().log(errorMsg);
         }
+    }
+
+	// 서버 연결해서 상품명으로 검색하고, 결과 받아온다.
+    private ArrayList<Tuple<Product, CollectedInfo>> doSearch(final String searchWord) {
+    	try {
+    		// 검색어 없으면 검색 안함
+    	    int wordLength = searchWord.length();
+    	    if(searchWord == null || wordLength < 1) {
+    	    	return null;
+    	    }
+    	    else if(wordLength < 2) {
+    	    	// 한 글자만 검색하면 검색결과 너무 많음. 2글자 이상 검색해라.
+    	    	IOHandler.getInstance().showAlert("검색어는 2자리 이상 입력해주십시오.");
+    	    	return null;
+    	    }
+    		
+    		// 검색 시 서버로부터 상품정보 - 최신수집정보가 쌍(Tuple)으로 이루어진 결과 배열을 받음.
+    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.SEARCH, (Object)searchWord);
+        	Response response = received.getResponse();
+        	ResponseType type = response.getResponseType();
+        	
+        	ArrayList<Tuple<Product, CollectedInfo>> receievedList = null;
+        	
+        	// 응답 결과에 따라 알아서 처리하셈.
+        	switch(type) {
+            	case SUCCEED:
+            		receievedList = (ArrayList<Tuple<Product, CollectedInfo>>) received.getObject();
+            		break;
+            	case FAILED:
+            		break;
+            	case SERVER_NOT_RESPONSE:
+            		break;
+            	case ERROR:
+            		break;
+        		default:
+        			break;
+        	}
+        	
+        	// 서버에서 받아온 값이 있을 때만 처리
+        	if(receievedList == null || receievedList.size() < 1) {
+        		IOHandler.getInstance().showAlert("검색 결과가 없습니다.");
+        		return null;
+        	}
+        	return receievedList;
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+    	return null;
     }
 
 	
