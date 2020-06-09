@@ -80,7 +80,7 @@ public class MainPageController implements Initializable {
     
     private void onSearch() {
     	String searchWord = searchField.getText();
-    	ArrayList<Tuple<Product, CollectedInfo>> received =doSearch(searchWord);
+    	ArrayList<Tuple<Product, CollectedInfo>> received = doSearch(searchWord);
     	if(received != null) {
     		moveToSearchPage(received);
     	}
