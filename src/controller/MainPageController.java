@@ -17,6 +17,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -35,6 +36,9 @@ import utility.IOHandler;
 
 public class MainPageController implements Initializable {
 	
+    @FXML
+    private Button zListBtn;
+
     @FXML
     private Button searchBtn;
     
@@ -64,6 +68,27 @@ public class MainPageController implements Initializable {
     @FXML
     void On_testBtn2_Clicked(ActionEvent event) {
 
+    }
+    
+    @FXML
+    void zListBtnClick(MouseEvent event) {
+    	 try {           
+             Stage primaryStage = (Stage) zListBtn.getScene().getWindow();
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/ZZimPage.fxml"));
+             Parent root = loader.load();
+             Scene scene = new Scene(root);             
+            
+             
+             primaryStage.setScene(scene);
+             primaryStage.setTitle("찜 목록");
+             primaryStage.show();
+
+         } catch (Exception e) {
+         	String errorMsg = "mainPageController.moveToZZim\n" + e.getMessage();
+         	e.printStackTrace();
+         	IOHandler.getInstance().showAlert(errorMsg);
+         	IOHandler.getInstance().log(errorMsg);
+         }
     }
     
     // 버튼

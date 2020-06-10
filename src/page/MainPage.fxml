@@ -8,6 +8,11 @@
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainPageController">
    <children>
+      <HBox alignment="TOP_RIGHT" prefHeight="24.0" prefWidth="600.0">
+         <children>
+            <Button fx:id="zListBtn" mnemonicParsing="false" onMouseClicked="#zListBtnClick" text="찜 목록 보기" />
+         </children>
+      </HBox>
       <HBox alignment="CENTER">
          <children>
             <TextField fx:id="searchField" onKeyPressed="#OnSearchPressed" prefHeight="23.0" prefWidth="426.0" promptText="상품명 입력">

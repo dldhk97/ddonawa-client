@@ -32,6 +32,7 @@ import network.ProtocolType;
 import network.Response;
 import network.ResponseType;
 import utility.IOHandler;
+import utility.UserAccount;
 
 public class LoginPageController {
 
@@ -102,6 +103,7 @@ public class LoginPageController {
         	switch(type) {
         	case SUCCEED:
         		IOHandler.getInstance().showAlert("로그인에 성공했습니다");
+        		UserAccount.getInstance().setAccount(account);
         		 moveToMain();
         		break;
         	case FAILED:

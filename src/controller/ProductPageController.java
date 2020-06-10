@@ -27,7 +27,7 @@ import network.ProtocolType;
 import network.Response;
 import network.ResponseType;
 import utility.IOHandler;
-import utility.userAccount;
+import utility.UserAccount;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
@@ -91,34 +91,43 @@ public class ProductPageController extends SidebarController implements Initiali
     
     @FXML
     void OnZzimRegisterBtnClicked(ActionEvent event) {
-    	String uId = userAccount.getInstance().getID();
+    	String uId = UserAccount.getInstance().getAccount().getId();
     	String productName = pName.getText();
     	Double target = Double.parseDouble(targetPrice.getText());
     	Favorite favorite = new Favorite(uId, productName, target);
-    			
-    	try {
-    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.ADD_FAVORITE, (Object)favorite);
-        	Response response = received.getResponse();
-        	ResponseType type = response.getResponseType();       	
-        	
-        	
-        	// 응답 결과에 따라 알아서 처리하셈.
-        	switch(type) {
-            	case SUCCEED:            		
-            		break;
-            	case FAILED:
-            		break;
-            	case SERVER_NOT_RESPONSE:
-            		break;
-            	case ERROR:
-            		break;
-        		default:
-        			IOHandler.getInstance().showAlert(response.getMessage());
-        			break;
-        	}
-    	}catch(Exception e)
+    	
+    	if(target>= Double.parseDouble(pPrice.getText()))
     	{
-    		e.printStackTrace();
+    		IOHandler.getInstance().showAlert("목표 가격을 다시 입력해주세요.");
+    		targetPrice.requestFocus();
+    	}
+    			
+    	else
+    	{
+	    	try {
+	    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.ADD_FAVORITE, (Object)favorite);
+	        	Response response = received.getResponse();
+	        	ResponseType type = response.getResponseType();       	
+	        	
+	        	
+	        	// 응답 결과에 따라 알아서 처리하셈.
+	        	switch(type) {
+	            	case SUCCEED:    
+	            		
+	            	case FAILED:
+	            		
+	            	case SERVER_NOT_RESPONSE:
+	            	
+	            	case ERROR:
+	            		
+	        		default:
+	        			IOHandler.getInstance().showAlert(response.getMessage());
+	        			break;
+	        	}
+	    	}catch(Exception e)
+	    	{
+	    		e.printStackTrace();
+	    	}
     	}
     }
 
