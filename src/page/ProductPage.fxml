@@ -84,7 +84,7 @@
       <HBox fx:id="zzimBar" alignment="CENTER" visible="false">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="목표 가격" />
-            <TextField fx:id="targetPrice">
+            <TextField fx:id="targetPrice" onKeyPressed="#TargetPressed">
                <HBox.margin>
                   <Insets left="10.0" right="10.0" />
                </HBox.margin>

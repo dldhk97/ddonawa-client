@@ -99,10 +99,9 @@ public class LoginPageController {
         	Protocol received = NetworkManager.getInstance().connect(ProtocolType.LOGIN, (Object)account);		// 대강 이런식으로...
         	Response response = received.getResponse();
         	ResponseType type = response.getResponseType();
-        	
         	switch(type) {
         	case SUCCEED:
-        		IOHandler.getInstance().showAlert("로그인에 성공했습니다");
+        		IOHandler.getInstance().showAlert("로그인에 성공했습니다"); 
         		UserAccount.getInstance().setAccount(account);
         		 moveToMain();
         		break;
@@ -115,7 +114,7 @@ public class LoginPageController {
         		break;
         	}
         	           
-        	//사용자 정보 저장해야할 듯
+        	
         	
         	
         	//moveToMain();

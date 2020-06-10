@@ -21,13 +21,14 @@ public class UserAccount {
 	}
 
 
-	public static Account getAccount() {
+	public Account getAccount() {
 		return account;
 	}
 
-	public static void setAccount(Account account) {
+	public void setAccount(Account account) {
 		UserAccount.account = account;
 	}
 
+	
 }
 

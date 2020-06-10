@@ -14,6 +14,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -33,7 +35,7 @@ import network.ResponseType;
 import utility.IOHandler;
 import utility.UserAccount;
 
-public class zzimPageControll implements Initializable{
+public class zzimPageControll {
     @FXML
     private TableView<Data> zListTable;
     
@@ -48,6 +50,22 @@ public class zzimPageControll implements Initializable{
     
     @FXML
     private Button backBtn;
+    
+    @FXML
+    void productClick(MouseEvent event) {    			  	
+    		if(event.getClickCount()>1)
+    		{
+    			Data a =zListTable.getSelectionModel().getSelectedItem();
+    			if(a!=null)
+    			{
+    				String productName=a.getFavorite().getProductName();
+    				Product target = new Product(productName, ""); 	
+    	    		System.out.println(target.getName() + " clicked!");  
+    	    		moveToProductPage(target);
+    			}
+    			
+    		} 	       	   	
+    }
     
     @FXML
     void deleteBtnClick(ActionEvent event) {
@@ -89,6 +107,8 @@ public class zzimPageControll implements Initializable{
     	try {
    	    	// 메인페이지 엶.
             FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
+            Clock.getInstance().setzCheck(false);
+            
 			// 기존 페이지 종료
    	    	Stage nowStage = (Stage) backBtn.getScene().getWindow();
    	    	nowStage.close();
@@ -102,23 +122,42 @@ public class zzimPageControll implements Initializable{
     
     
 
-    @FXML
-    void productClick(MouseEvent event) {
-    			  	
-    		// 사용자가 선택한 상품
-    	
+ 
     
-    	
-    	
+    private void moveToProductPage(Product p)
+    {
+    	 try {           
+             Stage primaryStage = new Stage();
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/ProductPage.fxml"));
+             Parent root = loader.load();
+             Scene scene = new Scene(root);
+             
+             ProductPageController pController = loader.getController();
+             pController.DataTransfer(p);
+             
+             primaryStage.setScene(scene);
+             primaryStage.setTitle(p.getName());
+             primaryStage.show();
+
+         } catch (Exception e) {
+         	String errorMsg = "SearchPageController.moveToProductPager\n" + e.getMessage();
+         	e.printStackTrace();
+         	IOHandler.getInstance().showAlert(errorMsg);
+         	IOHandler.getInstance().log(errorMsg);
+         }
     }
   
  
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-	
-		
+	public void initialize(Stage stage) {	
 		refresh();
+		
+		Clock.getInstance().setzCheck(true);
+		
+    	stage.setOnCloseRequest(evt->{
+    		Clock.getInstance().setzCheck(false);
+    		Clock.getInstance().requestClose();    		
+    	});
 	}
 	
 	   class Data{	
@@ -143,6 +182,7 @@ public class zzimPageControll implements Initializable{
 		    public StringProperty targetProperty() {
 				return target;
 			}
+		    
 		    
 	   }
 	   

@@ -13,6 +13,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
@@ -82,6 +84,14 @@ public class ProductPageController extends SidebarController implements Initiali
     ArrayList<CollectedInfo> collectedInfoList = null;
     XYChart.Series<String, Double> series;
     
+    @FXML
+    void TargetPressed(KeyEvent event) {
+    	if(event.getCode()==KeyCode.ENTER)
+    	{
+    		zzimRegister();
+    	}
+    }
+    
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
     	popup = new Popup();
@@ -91,44 +101,7 @@ public class ProductPageController extends SidebarController implements Initiali
     
     @FXML
     void OnZzimRegisterBtnClicked(ActionEvent event) {
-    	String uId = UserAccount.getInstance().getAccount().getId();
-    	String productName = pName.getText();
-    	Double target = Double.parseDouble(targetPrice.getText());
-    	Favorite favorite = new Favorite(uId, productName, target);
-    	
-    	if(target>= Double.parseDouble(pPrice.getText()))
-    	{
-    		IOHandler.getInstance().showAlert("목표 가격을 다시 입력해주세요.");
-    		targetPrice.requestFocus();
-    	}
-    			
-    	else
-    	{
-	    	try {
-	    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.ADD_FAVORITE, (Object)favorite);
-	        	Response response = received.getResponse();
-	        	ResponseType type = response.getResponseType();       	
-	        	
-	        	
-	        	// 응답 결과에 따라 알아서 처리하셈.
-	        	switch(type) {
-	            	case SUCCEED:    
-	            		
-	            	case FAILED:
-	            		
-	            	case SERVER_NOT_RESPONSE:
-	            	
-	            	case ERROR:
-	            		
-	        		default:
-	        			IOHandler.getInstance().showAlert(response.getMessage());
-	        			break;
-	        	}
-	    	}catch(Exception e)
-	    	{
-	    		e.printStackTrace();
-	    	}
-    	}
+    	zzimRegister();
     }
 
     
@@ -266,4 +239,45 @@ public class ProductPageController extends SidebarController implements Initiali
         return pane;
     }
     
+    public void zzimRegister()
+    {
+    	String uId = UserAccount.getInstance().getAccount().getId();
+    	String productName = pName.getText();
+    	Double target = Double.parseDouble(targetPrice.getText());
+    	Favorite favorite = new Favorite(uId, productName, target);
+    	
+    	if(target>= Double.parseDouble(pPrice.getText()))
+    	{
+    		IOHandler.getInstance().showAlert("목표 가격을 다시 입력해주세요.");
+    		targetPrice.requestFocus();
+    	}
+    			
+    	else
+    	{
+	    	try {
+	    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.ADD_FAVORITE, (Object)favorite);
+	        	Response response = received.getResponse();
+	        	ResponseType type = response.getResponseType();       	
+	        	
+	        	
+	        	// 응답 결과에 따라 알아서 처리하셈.
+	        	switch(type) {
+	            	case SUCCEED:    
+	            		
+	            	case FAILED:
+	            		
+	            	case SERVER_NOT_RESPONSE:
+	            	
+	            	case ERROR:
+	            		
+	        		default:
+	        			IOHandler.getInstance().showAlert(response.getMessage());
+	        			break;
+	        	}
+	    	}catch(Exception e)
+	    	{
+	    		e.printStackTrace();
+	    	}
+    	}
+    }
 }

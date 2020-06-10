@@ -22,7 +22,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.CollectedInfo;
 import model.Product;
 import model.Tuple;
@@ -34,8 +36,10 @@ import network.Response;
 import network.ResponseType;
 import utility.IOHandler;
 
-public class SearchPageController implements Initializable {
+public class SearchPageController {
 
+	@FXML
+    private VBox vbox;
     @FXML
     private Button SearchBtn;
     @FXML
@@ -45,7 +49,7 @@ public class SearchPageController implements Initializable {
     @FXML
     private TableView<Data> table;
     @FXML
-    private TableColumn<Data, ImageView> ImageColumn;
+    private TableColumn<Data, String> ImageColumn;
 
     @FXML
     private TableColumn<Data, String> ProductNameColumn;
@@ -61,6 +65,7 @@ public class SearchPageController implements Initializable {
     	try {
    	    	// 메인페이지 엶.
             FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
+            Clock.getInstance().setsCheck(false);
 			// 기존 페이지 종료
    	    	Stage nowStage = (Stage) SearchBtn.getScene().getWindow();
    	    	nowStage.close();
@@ -116,17 +121,23 @@ public class SearchPageController implements Initializable {
          	IOHandler.getInstance().log(errorMsg);
          }
     }
-
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
+	
+	public void initialize(Stage stage) {
 		searchField.requestFocus();
+		
+		Clock.getInstance().setsCheck(true);
+		
+    	stage.setOnCloseRequest(evt->{
+    		Clock.getInstance().setsCheck(false);
+    		Clock.getInstance().requestClose();    		
+    	});
 	}
 	
 	public boolean transferProduct(ArrayList<Tuple<Product, CollectedInfo>> receievedList) {
 		try {
 			//밑에 부분이 init 부분으로 가면 왜 안되는지 아직 파악못함
         	ObservableList<Data> myList = FXCollections.observableArrayList();
-        	
+        	int cnt=1;
         	for(Tuple<Product, CollectedInfo> t : receievedList) {
         		// 상품정보 꺼냄
         		Product p = t.getFirst();
@@ -134,12 +145,14 @@ public class SearchPageController implements Initializable {
         		// 상품의 수집정보(최신임)을 가져온다.
         		CollectedInfo ci = t.getSecond();
         		
-        		Data newData = new Data(p, ci);
+        		Data newData = new Data(p, ci, cnt);
         		myList.add(newData);
+        		cnt++;
         	}
         	     	
             ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-            PriceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());    	
+            PriceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());   
+            ImageColumn.setCellValueFactory(cellData -> cellData.getValue().imageProperty()); 
           
         	table.setItems(myList);
         	return true;
@@ -149,72 +162,6 @@ public class SearchPageController implements Initializable {
 		}
 		return false;
 	}
-    
-	@Deprecated
-	public boolean transferProduct(String s)
-    {		
-    	searchField.setText(s);    	
-    	try {
-    		searchField.requestFocus();
-    		
-    		// 서버 연결해서 상품명으로 검색하고, 결과 받아온다.
-    		String searchWord = s;
-    		
-    		// 검색 시 서버로부터 상품정보 - 최신수집정보가 쌍(Tuple)으로 이루어진 결과 배열을 받음.
-    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.SEARCH, (Object)searchWord);
-        	Response response = received.getResponse();
-        	ResponseType type = response.getResponseType();
-        	
-        	ArrayList<Tuple<Product, CollectedInfo>> receievedList = null;
-        	
-        	// 응답 결과에 따라 알아서 처리하셈.
-        	switch(type) {
-	        	case SUCCEED:
-	        		receievedList = (ArrayList<Tuple<Product, CollectedInfo>>) received.getObject();
-	        		break;
-	        	case FAILED:
-	        		break;
-	        	case SERVER_NOT_RESPONSE:
-	        		break;
-	        	case ERROR:
-	        		break;
-        		default:
-        			break;
-        	}
-        	
-        	// 서버에서 받아온 값이 있을 때만 처리
-        	if(receievedList == null || receievedList.size() < 1) {
-        		IOHandler.getInstance().showAlert("검색 결과가 없습니다.");
-        		return false;
-        	}
-        	
-        	//밑에 부분이 init 부분으로 가면 왜 안되는지 아직 파악못함
-        	ObservableList<Data> myList = FXCollections.observableArrayList();
-        	
-        	for(Tuple<Product, CollectedInfo> t : receievedList) {
-        		// 상품정보 꺼냄
-        		Product p = t.getFirst();
-        		
-        		// 상품의 수집정보(최신임)을 가져온다.
-        		CollectedInfo ci = t.getSecond();
-        		
-        		Data newData = new Data(p, ci);
-        		myList.add(newData);
-        	}
-        	     	
-            ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-            PriceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());    	
-          
-        	table.setItems(myList);
-        	return true;
-		}
-		catch(Exception e)
-		{
-			IOHandler.getInstance().log("상품목록 초기화"+ e);
-			e.printStackTrace();
-			return false;
-		}
-    }
     
 }
 
@@ -228,14 +175,25 @@ class Data{
 	private final StringProperty image;
 	private final StringProperty name;
     private final StringProperty price; 
- 
+   
+    public Data(final Product product, final CollectedInfo collectedInfo,int i) {
+    	this.product = product;
+    	this.collectedInfo = collectedInfo;
+    	
+    	
+        this.name = new SimpleStringProperty(product.getName());      
+        this.price= new SimpleStringProperty(String.valueOf(collectedInfo.getPrice()));
+        this.image= new SimpleStringProperty(String.valueOf(i));
+    }
+    
     public Data(final Product product, final CollectedInfo collectedInfo) {
     	this.product = product;
     	this.collectedInfo = collectedInfo;
     	
-        this.name = new SimpleStringProperty(product.getName());
-        this.image= new SimpleStringProperty("사진");
+    	
+        this.name = new SimpleStringProperty(product.getName());      
         this.price= new SimpleStringProperty(String.valueOf(collectedInfo.getPrice()));
+        this.image= new SimpleStringProperty("사진");
     }
     
     public Product getProduct() {
