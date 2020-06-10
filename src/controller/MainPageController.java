@@ -69,58 +69,14 @@ public class MainPageController implements Initializable {
     // 버튼
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-    	Parent parent = searchBtn.getParent().getParent();     
-    	addSideBar(parent);
+    	Parent parent = searchBtn.getParent().getParent();
+    	SidebarController sc = new SidebarController();
+    	sc.addSideBar(parent);
     	searchBtn.setOnAction(event->{
     		onSearch();
     	});
+    	searchField.requestFocus();
 	}
-    
-    private void addSideBar(Parent parent) {
-    	try {
-    		
-            HBox sideBarRoot = new HBox();
-       	 	sideBarRoot.setPrefSize(600, 400);
-       	 	VBox sideBarBox = new VBox();       	 	 	 	
-       	 	sideBarRoot.setAlignment(Pos.CENTER);
-       	    sideBarBox.setId("menu");       	    
-       	    sideBarBox.setPrefWidth(100);
-       	    
-       	    SidebarController sc = new SidebarController();
-    	    sc.setOnEventListener(new SearchEventListener(this));
-    	    ArrayList<MenuButton> menuButtons = sc.getMenuButtonList();
-    	    for(MenuButton mb : menuButtons) {
-    	    	sideBarBox.getChildren().add(mb);
-    	    }
-    	    
-    	    sideBarBox.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
-       	    sideBarBox.setTranslateX(-90);
-       	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), sideBarBox);       	    
-       	    menuTranslation.setFromX(-90);
-       	    menuTranslation.setToX(0);
-       	    
-       	    sideBarBox.setOnMouseEntered(evt -> {
-       	        menuTranslation.setRate(1);
-       	        menuTranslation.play();
-       	    });
-       	    sideBarBox.setOnMouseExited(evt -> {
-       	        menuTranslation.setRate(-1);
-       	        menuTranslation.play();
-       	    });
-       	    
-       	    sideBarRoot.getChildren().addAll(sideBarBox,parent);
-       	    Scene scene = new Scene(sideBarRoot);
-       	    Stage stage = new Stage();
-       	    
-       	    stage.setScene(scene);
-       	    stage.setTitle("또나와 메인화면");
-       	    stage.show();
-    	}
-    	catch (Exception e) {
-    		e.printStackTrace();
-		}
-    	
-    }
     
     private void onSearch() {
     	String searchWord = searchField.getText();

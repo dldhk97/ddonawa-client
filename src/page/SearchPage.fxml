@@ -33,6 +33,5 @@
          </columnResizePolicy>
       </TableView>
       <Button fx:id="goToMainBtn" mnemonicParsing="false" onAction="#OnGoToMainBtnClicked" text="메인화면" />
-      <Button fx:id="testBtn" mnemonicParsing="false" onAction="#test" text="Button" />
    </children>
 </VBox>

@@ -17,16 +17,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import model.CollectedInfo;
 import model.Product;
 import model.Tuple;
@@ -38,7 +34,7 @@ import network.Response;
 import network.ResponseType;
 import utility.IOHandler;
 
-public class SearchPageController extends SidebarController implements Initializable {
+public class SearchPageController implements Initializable {
 
     @FXML
     private Button SearchBtn;
@@ -96,26 +92,6 @@ public class SearchPageController extends SidebarController implements Initializ
     		moveToProductPage(target);
     	}
     }
-
-   // 임의 항목 추가 테스트 버튼
-    @FXML
-    void test(ActionEvent event) {
-//    	IOHandler.getInstance().showAlert("테스트");
-//    	
-//    		
-//    	 ObservableList<Data> myList = FXCollections.observableArrayList();
-//    	 
-//    	
-//    	 myList.add(new Data(new SimpleStringProperty("사진"),new SimpleStringProperty("고기"),new SimpleStringProperty("1000")));
-//    	 myList.add(new Data(new SimpleStringProperty("사진"),new SimpleStringProperty("나물"),new SimpleStringProperty("2000")));
-//    	 myList.add(new Data(new SimpleStringProperty("사진"),new SimpleStringProperty("생선"),new SimpleStringProperty("3000")));
-//    	 
-//    	 ImageColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-//         ProductNameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-//         PriceColumn.setCellValueFactory(cellData -> cellData.getValue().genderProperty());    	
-//      
-//    	table.setItems(myList);
-    }
     
     // 새창에서 연다.
     private void moveToProductPage(Product p)
@@ -143,7 +119,7 @@ public class SearchPageController extends SidebarController implements Initializ
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+		searchField.requestFocus();
 	}
 	
 	public boolean transferProduct(ArrayList<Tuple<Product, CollectedInfo>> receievedList) {

@@ -2,12 +2,17 @@ package controller;
 
 import java.util.ArrayList;
 
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import model.BigCategory;
 import model.Category;
 import model.CollectedInfo;
@@ -24,8 +29,55 @@ import utility.IOHandler;
 // 사이드바가 있는 컨트롤러는 Extends 해서 쓰세용
 public class SidebarController {
 	
+	public void addSideBar(Parent parent) {
+    	try {
+    		
+            HBox sideBarRoot = new HBox();
+       	 	sideBarRoot.setPrefSize(600, 400);
+       	 	VBox sideBarBox = new VBox();       	 	 	 	
+       	 	sideBarRoot.setAlignment(Pos.CENTER);
+       	    sideBarBox.setId("menu");       	    
+       	    sideBarBox.setPrefWidth(100);
+       	    
+//       	    SidebarController sc = new SidebarController();
+//    	    sc.setOnEventListener(new SearchEventListener(this));
+//    	    ArrayList<MenuButton> menuButtons = sc.getMenuButtonList();
+       	    ArrayList<MenuButton> menuButtons = getMenuButtonList();
+    	    for(MenuButton mb : menuButtons) {
+    	    	sideBarBox.getChildren().add(mb);
+    	    }
+    	    
+    	    sideBarBox.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
+       	    sideBarBox.setTranslateX(-90);
+       	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), sideBarBox);       	    
+       	    menuTranslation.setFromX(-90);
+       	    menuTranslation.setToX(0);
+       	    
+       	    sideBarBox.setOnMouseEntered(evt -> {
+       	        menuTranslation.setRate(1);
+       	        menuTranslation.play();
+       	    });
+       	    sideBarBox.setOnMouseExited(evt -> {
+       	        menuTranslation.setRate(-1);
+       	        menuTranslation.play();
+       	    });
+       	    
+       	    sideBarRoot.getChildren().addAll(sideBarBox,parent);
+       	    Scene scene = new Scene(sideBarRoot);
+       	    Stage stage = new Stage();
+       	    
+       	    stage.setScene(scene);
+       	    stage.setTitle("또나와 메인화면");
+       	    stage.show();
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+    	
+    }
+	
 	// 메뉴버튼 리스트를 가져옴. 안에는 메뉴아이템도 다 들어 있음.
-	protected ArrayList<MenuButton> getMenuButtonList(){
+	private ArrayList<MenuButton> getMenuButtonList(){
 		
 		ArrayList<MenuButton> result = new ArrayList<MenuButton>();
 		
@@ -172,7 +224,7 @@ public class SidebarController {
            }
 
         } catch (Exception e) {
-        	String errorMsg = "MainPageController.moveToSearchPage\n"+ e.getMessage();
+        	String errorMsg = "SidebarController.moveToSearchPage\n"+ e.getMessage();
         	IOHandler.getInstance().showAlert(errorMsg);
         	IOHandler.getInstance().log(errorMsg);
         }

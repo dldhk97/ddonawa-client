@@ -6,27 +6,17 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import javafx.animation.TranslateTransition;
 import javafx.beans.binding.ObjectExpression;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 import model.CollectedInfo;
 import model.Favorite;
 import model.Product;
@@ -40,8 +30,6 @@ import utility.IOHandler;
 import utility.userAccount;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -49,10 +37,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 
 
@@ -96,28 +82,11 @@ public class ProductPageController extends SidebarController implements Initiali
     ArrayList<CollectedInfo> collectedInfoList = null;
     XYChart.Series<String, Double> series;
     
-    //일단 이미지 클릭시 링크로 기본웹브라우저 통해서 접근
-    //URI 오류는 보통 링크를 틀렸을때 많이 나옴 , http:// 붙였는지 등등 확인 필요
-    @FXML
-    void OnProductImageClicked(MouseEvent event)  {
-    
-
-    }    
-    
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
     	popup = new Popup();
     	textArea = new TextArea("팝업");
     	
-    	// 맨 처음 초기화 하면서 차트, 이름, 가격, URL, 썸네일 등 초기화 해서 화면 보여줘야함 
-    	
-		// 이미지 설정하는 부분
-//		String s = "http://img.danawa.com/prod_img/500000/562/196/img/5196562_1.jpg?";
-//		Image img = new Image(s);
-//		Image.setImage(img); 	    
-	    
-//    	setupChart();
-//    	setupToolTip();
 	}
     
     @FXML
@@ -216,6 +185,10 @@ public class ProductPageController extends SidebarController implements Initiali
 			
 			Image.setOnMouseClicked(event->{
 				try {
+					if(recentInfo.getUrl() == null) {
+						IOHandler.getInstance().showAlert("해당 상품은 하이퍼링크가 존재하지 않습니다!");
+						return;
+					}
 					Desktop.getDesktop().browse(new URI(recentInfo.getUrl()));
 				} 
 				catch (Exception e) 
