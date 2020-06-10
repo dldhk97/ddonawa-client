@@ -28,6 +28,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CollectedInfo;
+import model.Favorite;
 import model.Product;
 import network.EventType;
 import network.NetworkManager;
@@ -36,6 +37,7 @@ import network.ProtocolType;
 import network.Response;
 import network.ResponseType;
 import utility.IOHandler;
+import utility.userAccount;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -188,7 +190,35 @@ public class ProductPageController extends SidebarController implements Initiali
     
     @FXML
     void OnZzimRegisterBtnClicked(ActionEvent event) {
-    	
+    	String uId = userAccount.getInstance().getID();
+    	String productName = pName.getText();
+    	Double target = Double.parseDouble(targetPrice.getText());
+    	Favorite favorite = new Favorite(uId, productName, target);
+    			
+    	try {
+    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.ADD_FAVORITE, (Object)favorite);
+        	Response response = received.getResponse();
+        	ResponseType type = response.getResponseType();       	
+        	
+        	
+        	// 응답 결과에 따라 알아서 처리하셈.
+        	switch(type) {
+            	case SUCCEED:            		
+            		break;
+            	case FAILED:
+            		break;
+            	case SERVER_NOT_RESPONSE:
+            		break;
+            	case ERROR:
+            		break;
+        		default:
+        			IOHandler.getInstance().showAlert(response.getMessage());
+        			break;
+        	}
+    	}catch(Exception e)
+    	{
+    		e.printStackTrace();
+    	}
     }
 
     
