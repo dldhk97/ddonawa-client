@@ -39,9 +39,6 @@ public class SidebarController {
        	    sideBarBox.setId("menu");       	    
        	    sideBarBox.setPrefWidth(100);
        	    
-//       	    SidebarController sc = new SidebarController();
-//    	    sc.setOnEventListener(new SearchEventListener(this));
-//    	    ArrayList<MenuButton> menuButtons = sc.getMenuButtonList();
        	    ArrayList<MenuButton> menuButtons = getMenuButtonList();
     	    for(MenuButton mb : menuButtons) {
     	    	sideBarBox.getChildren().add(mb);

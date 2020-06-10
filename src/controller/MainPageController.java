@@ -71,7 +71,9 @@ public class MainPageController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
     	Parent parent = searchBtn.getParent().getParent();
     	SidebarController sc = new SidebarController();
+    	sc.setOnEventListener(new SearchEventListener(this));
     	sc.addSideBar(parent);
+    	
     	searchBtn.setOnAction(event->{
     		onSearch();
     	});
@@ -87,8 +89,15 @@ public class MainPageController implements Initializable {
     }
     
     public void closeStage() {
-    	Stage primaryStage = (Stage) searchField.getScene().getWindow();
-    	primaryStage.close();
+    	try {
+    		Stage primaryStage = (Stage) searchField.getScene().getWindow();
+    		if(primaryStage != null)
+    			primaryStage.close();
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+    	
     }
     
     // --------------------------- 로직  ------------------------------------------ //
