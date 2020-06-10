@@ -94,48 +94,48 @@ public class ProductPageController extends SidebarController implements Initiali
 	    @FXML
 	    void OnGoToMainBtnClicked(ActionEvent event) {
 	    	 try {
-	             //메인페이지로 이동하기
-	             Stage primaryStage = (Stage) zzimBtn.getScene().getWindow();
-	             Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
-	             //Scene scene = new Scene(root);    	    
+	            //메인페이지로 이동하기
+	            Stage primaryStage = (Stage) zzimBtn.getScene().getWindow();
+	            Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
+	            //Scene scene = new Scene(root);    	    
+	            closeStage();
 	            	
-	             //Pane root1 = new Pane();            
-	             HBox root1 = new HBox();
-	        	 	root1.setPrefSize(600, 400);         	 	
-	        	 	VBox menu = new VBox();       	 	 	 	
-	        	 	root1.setAlignment(Pos.CENTER);
-	        	    menu.setId("menu");       	    
-	        	    menu.setPrefWidth(100);
+	            //Pane root1 = new Pane();            
+	            HBox root1 = new HBox();
+        	 	root1.setPrefSize(600, 400);         	 	
+        	 	VBox menu = new VBox();       	 	 	 	
+        	 	root1.setAlignment(Pos.CENTER);
+        	    menu.setId("menu");       	    
+        	    menu.setPrefWidth(100);
 
-	        	    // 대분류 버튼과 그 예하의 아이템들 추가
-	           	    ArrayList<MenuButton> menuButtons = getMenuButtonList();
-	           	    for(MenuButton mb : menuButtons) {
-	           	    	menu.getChildren().add(mb);
-	           	    }
-	        	   
+        	    // 대분류 버튼과 그 예하의 아이템들 추가
+           	    ArrayList<MenuButton> menuButtons = getMenuButtonList();
+           	    for(MenuButton mb : menuButtons) {
+           	    	menu.getChildren().add(mb);
+           	    }
+        	   
 
-	        	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
-	        	    menu.setTranslateX(-90);
-	        	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);       	    
-	        	    menuTranslation.setFromX(-90);
-	        	    menuTranslation.setToX(0);
-	        	    
-	        	    menu.setOnMouseEntered(evt -> {
-	        	        menuTranslation.setRate(1);
-	        	        menuTranslation.play();
-	        	    });
-	        	    menu.setOnMouseExited(evt -> {
-	        	        menuTranslation.setRate(-1);
-	        	        menuTranslation.play();
-	        	    });
-	        	    
-	        	    root1.getChildren().addAll(menu,root);
-	        	    Scene scene = new Scene(root1);
-	        	    
-	        	    
-	             primaryStage.setScene(scene);
-	             primaryStage.setTitle("또나와 메인화면");
-	             primaryStage.show();
+        	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
+        	    menu.setTranslateX(-90);
+        	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);       	    
+        	    menuTranslation.setFromX(-90);
+        	    menuTranslation.setToX(0);
+        	    
+        	    menu.setOnMouseEntered(evt -> {
+        	        menuTranslation.setRate(1);
+        	        menuTranslation.play();
+        	    });
+        	    menu.setOnMouseExited(evt -> {
+        	        menuTranslation.setRate(-1);
+        	        menuTranslation.play();
+        	    });
+        	    
+        	    root1.getChildren().addAll(menu,root);
+        	    Scene scene = new Scene(root1);
+        	    
+	            primaryStage.setScene(scene);
+	            primaryStage.setTitle("또나와 메인화면");
+	            primaryStage.show();
 
 	         } catch (Exception e) {
 	         	String errorMsg = "LoginPageController.moveToMain\n" + e.getMessage();
@@ -157,6 +157,18 @@ public class ProductPageController extends SidebarController implements Initiali
     
 
     }    
+    
+    private void closeStage() {
+    	try {
+    		Stage primaryStage = (Stage) zzimBtn.getScene().getWindow();
+        	primaryStage.close();    		
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		IOHandler.getInstance().showAlert("Failed to close stage.");
+		}
+    	
+    }
     
     @Override
 	public void initialize(URL location, ResourceBundle resources) {

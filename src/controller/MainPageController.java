@@ -1,28 +1,25 @@
 package controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.CollectedInfo;
@@ -72,11 +69,57 @@ public class MainPageController implements Initializable {
     // 버튼
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-//		// 머품목 갯수 받아와서 버튼 만드러줌
+    	addSideBar();
     	searchBtn.setOnAction(event->{
     		onSearch();
     	});
 	}
+    
+    private void addSideBar() {
+    	try {
+    		Parent parent = searchBtn.getParent().getParent();     
+            HBox sideBarRoot = new HBox();
+       	 	sideBarRoot.setPrefSize(600, 400);
+       	 	VBox sideBarBox = new VBox();       	 	 	 	
+       	 	sideBarRoot.setAlignment(Pos.CENTER);
+       	    sideBarBox.setId("menu");       	    
+       	    sideBarBox.setPrefWidth(100);
+       	    
+       	    SidebarController sc = new SidebarController();
+    	    sc.setOnEventListener(new SearchEventListener(this));
+    	    ArrayList<MenuButton> menuButtons = sc.getMenuButtonList();
+    	    for(MenuButton mb : menuButtons) {
+    	    	sideBarBox.getChildren().add(mb);
+    	    }
+    	    
+    	    sideBarBox.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
+       	    sideBarBox.setTranslateX(-90);
+       	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), sideBarBox);       	    
+       	    menuTranslation.setFromX(-90);
+       	    menuTranslation.setToX(0);
+       	    
+       	    sideBarBox.setOnMouseEntered(evt -> {
+       	        menuTranslation.setRate(1);
+       	        menuTranslation.play();
+       	    });
+       	    sideBarBox.setOnMouseExited(evt -> {
+       	        menuTranslation.setRate(-1);
+       	        menuTranslation.play();
+       	    });
+       	    
+       	    sideBarRoot.getChildren().addAll(sideBarBox,parent);
+       	    Scene scene = new Scene(sideBarRoot);
+       	    Stage stage = new Stage();
+       	    
+       	    stage.setScene(scene);
+       	    stage.setTitle("또나와 메인화면");
+       	    stage.show();
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+    	
+    }
     
     private void onSearch() {
     	String searchWord = searchField.getText();
@@ -84,6 +127,11 @@ public class MainPageController implements Initializable {
     	if(received != null) {
     		moveToSearchPage(received);
     	}
+    }
+    
+    public void closeStage() {
+    	Stage primaryStage = (Stage) searchField.getScene().getWindow();
+    	primaryStage.close();
     }
     
     // --------------------------- 로직  ------------------------------------------ //
@@ -160,6 +208,23 @@ public class MainPageController implements Initializable {
     		e.printStackTrace();
 		}
     	return null;
+    }
+    
+ // 데이터 수신을 위한 리스너
+    private class SearchEventListener implements SidebarController.ISearchEventListener {
+    	MainPageController pageController;
+    	
+    	public SearchEventListener(MainPageController pageController) {
+    		this.pageController = pageController; 
+    	}
+
+		@Override
+		public void onEvent(ArrayList<Tuple<Product, CollectedInfo>> received) {
+			pageController.moveToSearchPage(received);
+			closeStage();
+		}
+
+        
     }
 
 	
