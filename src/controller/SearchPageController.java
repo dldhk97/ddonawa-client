@@ -63,47 +63,11 @@ public class SearchPageController extends SidebarController implements Initializ
     @FXML
     void OnGoToMainBtnClicked(ActionEvent event) {    	
     	try {
-	            //메인페이지로 이동하기
-	            Stage primaryStage = (Stage) goToMainBtn.getScene().getWindow();
-	            Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
-	            //Scene scene = new Scene(root);    	    
-	           	
-	            //Pane root1 = new Pane();            
-	            HBox root1 = new HBox();
-	       	 	root1.setPrefSize(600, 400);         	 	
-	       	 	VBox menu = new VBox();       	 	 	 	
-	       	 	root1.setAlignment(Pos.CENTER);
-	       	    menu.setId("menu");       	    
-	       	    menu.setPrefWidth(100);
-	
-	       	    // 대분류 버튼과 그 예하의 아이템들 추가
-	       	    ArrayList<MenuButton> menuButtons = getMenuButtonList();
-	       	    for(MenuButton mb : menuButtons) {
-	       	    	menu.getChildren().add(mb);
-	       	    }
-	
-	       	    menu.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
-	       	    menu.setTranslateX(-90);
-	       	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), menu);       	    
-	       	    menuTranslation.setFromX(-90);
-	       	    menuTranslation.setToX(0);
-	       	    
-	       	    menu.setOnMouseEntered(evt -> {
-	       	        menuTranslation.setRate(1);
-	       	        menuTranslation.play();
-	       	    });
-	       	    menu.setOnMouseExited(evt -> {
-	       	        menuTranslation.setRate(-1);
-	       	        menuTranslation.play();
-	       	    });
-	       	    
-	       	    root1.getChildren().addAll(menu,root);
-	       	    Scene scene = new Scene(root1);
-	       	    
-	       	    
-	            primaryStage.setScene(scene);
-	            primaryStage.setTitle("또나와 메인화면");
-	            primaryStage.show();
+   	    	// 메인페이지 엶.
+            FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
+			// 기존 페이지 종료
+   	    	Stage nowStage = (Stage) SearchBtn.getScene().getWindow();
+   	    	nowStage.close();
 	
 	        } catch (Exception e) {
 	        	String errorMsg = "LoginPageController.moveToMain\n" + e.getMessage();
@@ -153,10 +117,11 @@ public class SearchPageController extends SidebarController implements Initializ
 //    	table.setItems(myList);
     }
     
+    // 새창에서 연다.
     private void moveToProductPage(Product p)
     {
     	 try {           
-             Stage primaryStage = (Stage) table.getScene().getWindow();            
+             Stage primaryStage = new Stage();
              FXMLLoader loader = new FXMLLoader(getClass().getResource("/page/ProductPage.fxml"));
              Parent root = loader.load();
              Scene scene = new Scene(root);

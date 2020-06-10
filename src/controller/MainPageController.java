@@ -69,15 +69,16 @@ public class MainPageController implements Initializable {
     // 버튼
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-    	addSideBar();
+    	Parent parent = searchBtn.getParent().getParent();     
+    	addSideBar(parent);
     	searchBtn.setOnAction(event->{
     		onSearch();
     	});
 	}
     
-    private void addSideBar() {
+    private void addSideBar(Parent parent) {
     	try {
-    		Parent parent = searchBtn.getParent().getParent();     
+    		
             HBox sideBarRoot = new HBox();
        	 	sideBarRoot.setPrefSize(600, 400);
        	 	VBox sideBarBox = new VBox();       	 	 	 	
@@ -148,11 +149,11 @@ public class MainPageController implements Initializable {
             SearchPageController sController = loader.getController();
             boolean canIMove = sController.transferProduct(received);
             
-           if(canIMove) {
+            if(canIMove) {
         	   primaryStage.setScene(scene);
                primaryStage.setTitle("또나와 검색결과");
                primaryStage.show();
-           }
+            }
 
         } catch (Exception e) {
         	String errorMsg = "MainPageController.moveToSearchPage\n"+ e.getMessage();

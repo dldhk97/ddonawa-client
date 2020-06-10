@@ -130,7 +130,9 @@ public class LoginPageController {
     private void moveToMain() {
         try {
             //메인페이지로 이동하기
-            Parent root = FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
+            FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
+            
+            // 현재 페이지 종료
             Stage primaryStage = (Stage) loginBtn.getScene().getWindow();
             primaryStage.close();
 
