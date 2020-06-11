@@ -46,7 +46,7 @@ public class Clock extends Thread{
 	}
 	
 	Calendar lastAsk = Calendar.getInstance();
-	private static final int FAVORITE_CHECK_PERIOD = 60000;		// 60초마다 한번 서버한테 물어봄. 찜이 최저가 갱신 했는지.
+	private static final int FAVORITE_CHECK_PERIOD = 180000;		// 60초마다 한번 서버한테 물어봄. 찜이 최저가 갱신 했는지.
 	private static final int DIE_CHECK_PERIOD = 10000;	// 10초마다 한번 죽어도되는지 물어봄
 	
 	@Override
@@ -63,7 +63,7 @@ public class Clock extends Thread{
 				while(true) {
 	        		Thread.sleep(DIE_CHECK_PERIOD);
 	        		
-	        		IOHandler.getInstance().log("메인스레드 검사함");
+//	        		IOHandler.getInstance().log("메인스레드 검사함");
 	        		// 메인스레드가 뒤졌느지 확인함.
 	        		
 	        		if(!isMainThreadAlvie()) {

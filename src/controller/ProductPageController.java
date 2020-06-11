@@ -20,7 +20,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
-import javafx.stage.Popup;
+import javafx.stage.Stage;
 import model.Account;
 import model.CollectedInfo;
 import model.Favorite;
@@ -215,6 +215,8 @@ public class ProductPageController extends SidebarController implements Initiali
 	    	if(collectedInfoList == null || collectedInfoList.size() < 1)
 	    	{
 	    		System.out.println("선택한 상품을 검색에서 못받아옴");
+	    		closePage();
+	    		return;
 	    	}    	
 	    	
 	    	// 썸네일 구하기
@@ -254,7 +256,8 @@ public class ProductPageController extends SidebarController implements Initiali
 			setupFavoriteView();
     	}
     	catch(Exception e) {
-    		IOHandler.getInstance().log("ProductPageController.DataTransfer : " +e);
+    		IOHandler.getInstance().log("ProductPageController.DataTransfer : " + e);
+    		closePage();
     	}
     	
     }
@@ -385,4 +388,9 @@ public class ProductPageController extends SidebarController implements Initiali
     protected String toUTF8(String str) throws UnsupportedEncodingException {
 		return URLEncoder.encode(str, "UTF-8");
 	}
+    
+    private void closePage() {
+    	Stage primaryStage = (Stage) zzimBtn.getScene().getWindow();
+		primaryStage.close();
+    }
 }
