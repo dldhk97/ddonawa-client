@@ -1,9 +1,11 @@
 package utility;
 
 import java.util.Date;
+import java.util.Optional;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 
 public class IOHandler {
 	
@@ -39,9 +41,30 @@ public class IOHandler {
 		alert.setContentText(msg);
 		alert.showAndWait();
 	}
+	
+	public boolean showDialog(String msg) {
+		return showDialog(null, null, msg);
+	}
+	
+	public boolean showDialog(String title, String msg) {
+		return showDialog(title, null, msg);
+	}
+	
+	public boolean showDialog(String title, String header, String msg) {
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(msg);
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK){
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	// 콘솔 or 텍스트 파일에 로깅
 	public void log(String s) {
-		System.out.println("[" + new Date() + ".Server]" + s);
+		System.out.println("[" + new Date() + "]" + s);
 	}
 }

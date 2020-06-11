@@ -71,27 +71,21 @@ public class zzimPageControll {
     void deleteBtnClick(ActionEvent event) {
     	
     	try {
-    		Data a =zListTable.getSelectionModel().getSelectedItem();
+    		Data a = zListTable.getSelectionModel().getSelectedItem();
     		if(a!=null)
     		{
 				Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.DELETE_FAVORITE, (Object)a.getFavorite());
 		    	Response response = received.getResponse();
 		    	ResponseType type = response.getResponseType();       	
-		    	ArrayList<Favorite> receievedList = null;
+		    	
 		    	// 응답 결과에 따라 알아서 처리하셈.
 		    	switch(type) {
 		        	case SUCCEED:    
 		        		IOHandler.getInstance().showAlert(response.getMessage());
-		        		refresh();
-		        		break;
-		        	case FAILED:
-		        		break;
-		        	case SERVER_NOT_RESPONSE:
-		        		break;
-		        	case ERROR:
+		        		refreshTable();
 		        		break;
 		    		default:
-		    			
+		    			IOHandler.getInstance().showAlert("찜 삭제에 실패하였습니다!");
 		    			break;
 		    	}
     		}
@@ -119,10 +113,6 @@ public class zzimPageControll {
 	        }    	 
     }	
     
-    
-
- 
-    
     private void moveToProductPage(Product p)
     {
     	 try {           
@@ -149,10 +139,7 @@ public class zzimPageControll {
  
 
 	public void initialize(Stage stage) {	
-		refresh();
-		
-//    	stage.setOnCloseRequest(evt->{    		
-//    	});
+		refreshTable();
 	}
 	
 	   class Data{	
@@ -181,9 +168,8 @@ public class zzimPageControll {
 		    
 	   }
 	   
-	   public void refresh()
+	   public void refreshTable()
 	   {
-
 			try {
 				Account account = UserAccount.getInstance().getAccount();
 				Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.GET_FAVORITE, (Object)account);

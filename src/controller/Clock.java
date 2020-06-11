@@ -46,28 +46,28 @@ public class Clock extends Thread{
 	}
 	
 	Calendar lastAsk = Calendar.getInstance();
-	private static final int ASK_PERIOD = 30000;		// 60초마다 한번 서버한테 물어봄. 찜이 최저가 갱신 했는지.
-	private static final int DIE_CHECK_PERIOD = 10000;	// 30초마다 한번 죽어도되는지 물어봄
-	private static int cnt = 0;
+	private static final int FAVORITE_CHECK_PERIOD = 60000;		// 60초마다 한번 서버한테 물어봄. 찜이 최저가 갱신 했는지.
+	private static final int DIE_CHECK_PERIOD = 10000;	// 10초마다 한번 죽어도되는지 물어봄
 	
 	@Override
 	public void run() {
 		isRun = true;
-		cnt++;
+		
 		while(isRun)
 		{
-			System.out.println("ㅇㅋ 파싱함.");
+			IOHandler.getInstance().log("ㅇㅋ 파싱함.");
 			requestFavoriteCheck();
 			lastAsk = Calendar.getInstance();
 			
 			try {
 				while(true) {
 	        		Thread.sleep(DIE_CHECK_PERIOD);
-	        		System.out.println("저 죽으면 됩니까? 스레드개수 : " + cnt);
 	        		
+	        		IOHandler.getInstance().log("메인스레드 검사함");
 	        		// 메인스레드가 뒤졌느지 확인함.
+	        		
 	        		if(!isMainThreadAlvie()) {
-	        			System.out.println("메인 쓰레드 뒤져서 저도 죽습니다.");
+	        			IOHandler.getInstance().log("메인 쓰레드 뒤져서 저도 죽습니다.");
 	        			isRun = false;
 	        			break;
 	        		}
@@ -75,8 +75,8 @@ public class Clock extends Thread{
 	        		Calendar now = Calendar.getInstance();
 	        		
 	        		long diff = now.getTimeInMillis() - lastAsk.getTimeInMillis();
-	        		if(diff > ASK_PERIOD) {
-	        			System.out.println("1시간 지났으니 파싱이나 해라");
+	        		if(diff > FAVORITE_CHECK_PERIOD) {
+	        			IOHandler.getInstance().log("1시간 지났으니 파싱이나 해라");
 	        			break;
 	        		}
 	        	}

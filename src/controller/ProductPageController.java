@@ -103,11 +103,40 @@ public class ProductPageController extends SidebarController implements Initiali
     void OnZzimRegisterBtnClicked(ActionEvent event) {
     	if(currentFavorite == null) {
     		zzimRegister();
+    		setupFavoriteView();
     	}
     	else {
-    		IOHandler.getInstance().showAlert("이미 찜 정보가 등록되어 있습니다!", "찜 정보를 삭제한 후 등록해주세요!");
+    		boolean isDeleteFavorite = IOHandler.getInstance().showDialog("이미 찜 정보가 등록되어 있습니다!", "찜 정보를 삭제한 후 새로 등록하시겠습니까?");
+    		if(isDeleteFavorite) {
+    			deleteFavorite();
+    			setupFavoriteView();
+    			
+    		}
     	}
     	
+    }
+    
+    private void deleteFavorite() {
+    	// 사용자가 선택한 상품정보를 서버에게 넘겨주고, 수집정보를 가져온다.
+    	try {
+    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.DELETE_FAVORITE, (Object)currentFavorite);
+	    	Response response = received.getResponse();
+	    	ResponseType type = response.getResponseType();       	
+	    	
+	    	// 응답 결과에 따라 알아서 처리하셈.
+	    	switch(type) {
+	        	case SUCCEED:    
+	        		IOHandler.getInstance().showAlert(response.getMessage());
+	        		break;
+	    		default:
+	    			IOHandler.getInstance().showAlert("찜 삭제에 실패하였습니다!");
+	    			break;
+	    	}
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+		
     }
 
     
@@ -160,14 +189,6 @@ public class ProductPageController extends SidebarController implements Initiali
     	
     	
     	return null;
-    }
-    
-    private void setFavoriteInfo() {
-    	if(currentFavorite == null)
-    		return;
-    	
-    	String targetPriceStr = String.valueOf(currentFavorite.getTargetPrice());
-    	targetPrice.setText(targetPriceStr);
     }
     
     public void DataTransfer(Product product)
@@ -227,21 +248,33 @@ public class ProductPageController extends SidebarController implements Initiali
 			});
 			
 			setupChart();
+			setupFavoriteView();
     	}
     	catch(Exception e) {
     		IOHandler.getInstance().log("ProductPageController.DataTransfer : " +e);
     	}
-
-		// 서버로부터 찜 정보 가져옴. 찜 정보가 있다면 세팅.
+    	
+    }
+    
+    private void setupFavoriteView() {
+    	// 서버로부터 찜 정보 가져옴. 찜 정보가 있다면 세팅.
     	try {
     		currentFavorite = getFavoriteInfo();
-    		setFavoriteInfo();
+    		
+    		if(currentFavorite == null) {
+        		targetPrice.setEditable(true);
+        		targetPrice.setText("");
+        		return;
+        	}
+        	
+        	String targetPriceStr = String.valueOf(currentFavorite.getTargetPrice());
+        	targetPrice.setText(targetPriceStr);
+        	targetPrice.setEditable(false);
     		
     	}
     	catch (Exception e) {
     		e.printStackTrace();
 		}
-    	
     }
     
     public Double getMinPrice(ArrayList<CollectedInfo> list) {
@@ -300,12 +333,21 @@ public class ProductPageController extends SidebarController implements Initiali
     {
     	String uId = UserAccount.getInstance().getAccount().getId();
     	String productName = pName.getText();
-    	Double target = Double.parseDouble(targetPrice.getText());
+    	double target = Double.MAX_VALUE;
+    	try {
+    		target = Double.parseDouble(targetPrice.getText());
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		IOHandler.getInstance().showAlert("올바르지 않은 목표 가격입니다!");
+    		return;
+		}
+    	
     	Favorite favorite = new Favorite(uId, productName, target);
     	
     	if(target>= Double.parseDouble(pPrice.getText()))
     	{
-    		IOHandler.getInstance().showAlert("목표 가격을 다시 입력해주세요.");
+    		IOHandler.getInstance().showAlert("목표 가격은 현재가보다 낮아야 합니다.");
     		targetPrice.requestFocus();
     	}
     			
@@ -320,7 +362,7 @@ public class ProductPageController extends SidebarController implements Initiali
 	        	// 응답 결과에 따라 알아서 처리하셈.
 	        	switch(type) {
 	            	case SUCCEED:    
-	            		
+	            		currentFavorite = favorite;
 	            	case FAILED:
 	            		
 	            	case SERVER_NOT_RESPONSE:
