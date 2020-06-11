@@ -223,9 +223,14 @@ public class ProductPageController extends SidebarController implements Initiali
 	    	CollectedInfo recentInfo = collectedInfoList.get(0);
 	    	String thumb = recentInfo.getThumbnail();
 	    	if(thumb != null && thumb.length() > 0)
-	    	{
+	    	{	    		
 	    		Image img = new Image(recentInfo.getThumbnail());
     			Image.setImage(img);
+	    	}
+	    	else
+	    	{
+	    		Image img = new Image("/NoImage.png");
+	    		Image.setImage(img);
 	    	}
 	    	
 	    	// 표시할 정보 명시 및 최저가 구하기
@@ -243,8 +248,21 @@ public class ProductPageController extends SidebarController implements Initiali
 						IOHandler.getInstance().showAlert("해당 상품은 하이퍼링크가 존재하지 않습니다!");
 						return;
 					}
-					String url = toUTF8(recentInfo.getUrl());
-					Desktop.getDesktop().browse(new URI(url));
+					String url =recentInfo.getUrl();
+					
+					if(isKoreanInclude(url))
+					{
+						String s = "https://";
+						String[] cut = s.split("://");
+						s+=toUTF8(cut[1]);
+						Desktop.getDesktop().browse(new URI(s));
+					}
+					else
+					{
+						//한글 없을 때
+						String s = recentInfo.getUrl();					
+						Desktop.getDesktop().browse(new URI(s));
+					}
 				} 
 				catch (Exception e) 
 				{
@@ -389,6 +407,17 @@ public class ProductPageController extends SidebarController implements Initiali
 		return URLEncoder.encode(str, "UTF-8");
 	}
     
+
+    public boolean isKoreanInclude(String s)
+    {
+    	if(s.matches(".*[ㄱ-ㅎㅏ-ㅣ가-힣]+.*"))
+    	{
+    		return true;
+    	}
+    	else
+    		return false;
+    }
+
     private void closePage() {
     	Stage primaryStage = (Stage) zzimBtn.getScene().getWindow();
 		primaryStage.close();
