@@ -107,7 +107,6 @@ public class zzimPageControll {
     	try {
    	    	// 메인페이지 엶.
             FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
-            Clock.getInstance().setzCheck(false);
             
 			// 기존 페이지 종료
    	    	Stage nowStage = (Stage) backBtn.getScene().getWindow();
@@ -152,12 +151,8 @@ public class zzimPageControll {
 	public void initialize(Stage stage) {	
 		refresh();
 		
-		Clock.getInstance().setzCheck(true);
-		
-    	stage.setOnCloseRequest(evt->{
-    		Clock.getInstance().setzCheck(false);
-    		Clock.getInstance().requestClose();    		
-    	});
+//    	stage.setOnCloseRequest(evt->{    		
+//    	});
 	}
 	
 	   class Data{	

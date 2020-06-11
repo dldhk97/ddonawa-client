@@ -22,36 +22,11 @@ import utility.UserAccount;
 public class Clock extends Thread{
 	//0-메인, 1-찜, 2-서치
 	private static boolean isRun=false;
-	private static boolean mCheck=false;
-	private static boolean zCheck=false;
-	private static boolean sCheck=false;
+	
+	private static Thread mainThread;
 
 	public static boolean isRun() {
 		return isRun;
-	}
-
-	public boolean ismCheck() {
-		return mCheck;
-	}
-
-	public void setmCheck(boolean mCheck) {
-		this.mCheck = mCheck;
-	}
-
-	public boolean iszCheck() {
-		return zCheck;
-	}
-
-	public void setzCheck(boolean zCheck) {
-		this.zCheck = zCheck;
-	}
-
-	public boolean issCheck() {
-		return sCheck;
-	}
-
-	public void setsCheck(boolean sCheck) {
-		this.sCheck = sCheck;
 	}
 
 	private static Clock cInstance;
@@ -64,14 +39,15 @@ public class Clock extends Thread{
 		return cInstance;
 	}
 	
-	private Clock()
-	{
-		
+	private Clock() {}
+	
+	public void setMainThread(final Thread mainThread) {
+		this.mainThread = mainThread;
 	}
 	
 	Calendar lastAsk = Calendar.getInstance();
-	private static final int ASK_PERIOD = 30000;		// 10초마다 한번 서버한테 물어봄
-	private static final int DIE_CHECK_PERIOD = 10000;	// 10초마다 한번 죽어도되는지 물어봄
+	private static final int ASK_PERIOD = 30000;		// 60초마다 한번 서버한테 물어봄. 찜이 최저가 갱신 했는지.
+	private static final int DIE_CHECK_PERIOD = 10000;	// 30초마다 한번 죽어도되는지 물어봄
 	private static int cnt = 0;
 	
 	@Override
@@ -89,9 +65,10 @@ public class Clock extends Thread{
 	        		Thread.sleep(DIE_CHECK_PERIOD);
 	        		System.out.println("저 죽으면 됩니까? 스레드개수 : " + cnt);
 	        		
-	        		requestClose();
-	        		if(isRun == false) {
-	        			System.out.println("응 죽어");
+	        		// 메인스레드가 뒤졌느지 확인함.
+	        		if(!isMainThreadAlvie()) {
+	        			System.out.println("메인 쓰레드 뒤져서 저도 죽습니다.");
+	        			isRun = false;
 	        			break;
 	        		}
 	        		
@@ -109,6 +86,13 @@ public class Clock extends Thread{
 			}
 			
 		}
+	}
+	
+	private boolean isMainThreadAlvie() {
+		if(mainThread == null) {
+			return false;
+		}
+		return mainThread.isAlive();
 	}
 	
 	
@@ -160,22 +144,6 @@ public class Clock extends Thread{
 		});
 	}
 	
-	public void requestClose()
-	{	
-		//모든 페이지가 닫혔을 때 아시겠나요?
-		if(closeCheck())
-		{
-			System.out.println("ㅎㅇ");
-			isRun=false;
-		}
-			
-	}
-	
-	private boolean closeCheck() {
-		boolean x = !(mCheck||zCheck||sCheck);
-		return x;
-		
-	}
 	
 }
 

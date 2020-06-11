@@ -105,14 +105,8 @@ public class MainPageController implements Initializable {
     		onSearch();
     	});
     	searchField.requestFocus();
-    	Clock.getInstance().setmCheck(true);
     	
-    	Stage stage = (Stage) zListBtn.getScene().getWindow();
-    	stage.setOnCloseRequest(evt->{
-    		Clock.getInstance().setmCheck(false);
-    		Clock.getInstance().requestClose();    		
-    	});
-    	
+    	Clock.getInstance().setMainThread(Thread.currentThread());
     	if(!Clock.getInstance().isRun()) {
     		Clock.getInstance().start();
     		System.out.println("쓰레드 시작");
@@ -155,10 +149,9 @@ public class MainPageController implements Initializable {
             boolean canIMove = sController.transferProduct(received);
             
             if(canIMove) {
-            	Clock.getInstance().setmCheck(false);
             	primaryStage.setScene(scene);
-               primaryStage.setTitle("또나와 검색결과");
-               primaryStage.show();
+                primaryStage.setTitle("또나와 검색결과");
+                primaryStage.show();
             }
 
         } catch (Exception e) {

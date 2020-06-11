@@ -65,7 +65,7 @@ public class SearchPageController {
     	try {
    	    	// 메인페이지 엶.
             FXMLLoader.load(getClass().getResource("/page/MainPage.fxml"));
-            Clock.getInstance().setsCheck(false);
+            
 			// 기존 페이지 종료
    	    	Stage nowStage = (Stage) SearchBtn.getScene().getWindow();
    	    	nowStage.close();
@@ -125,12 +125,8 @@ public class SearchPageController {
 	public void initialize(Stage stage) {
 		searchField.requestFocus();
 		
-		Clock.getInstance().setsCheck(true);
-		
-    	stage.setOnCloseRequest(evt->{
-    		Clock.getInstance().setsCheck(false);
-    		Clock.getInstance().requestClose();    		
-    	});
+//    	stage.setOnCloseRequest(evt->{    		
+//    	});
 	}
 	
 	public boolean transferProduct(ArrayList<Tuple<Product, CollectedInfo>> receievedList) {
