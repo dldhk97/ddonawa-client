@@ -1,8 +1,10 @@
 package controller;
 
 import java.awt.Desktop;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -239,7 +241,8 @@ public class ProductPageController extends SidebarController implements Initiali
 						IOHandler.getInstance().showAlert("해당 상품은 하이퍼링크가 존재하지 않습니다!");
 						return;
 					}
-					Desktop.getDesktop().browse(new URI(recentInfo.getUrl()));
+					String url = toUTF8(recentInfo.getUrl());
+					Desktop.getDesktop().browse(new URI(url));
 				} 
 				catch (Exception e) 
 				{
@@ -379,4 +382,7 @@ public class ProductPageController extends SidebarController implements Initiali
 	    	}
     	}
     }
+    protected String toUTF8(String str) throws UnsupportedEncodingException {
+		return URLEncoder.encode(str, "UTF-8");
+	}
 }
