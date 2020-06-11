@@ -250,12 +250,23 @@ public class ProductPageController extends SidebarController implements Initiali
 					}
 					String url =recentInfo.getUrl();
 					
+					StringBuilder sb = new StringBuilder();
 					if(isKoreanInclude(url))
 					{
-						String s = "https://";
-						String[] cut = s.split("://");
-						s+=toUTF8(cut[1]);
-						Desktop.getDesktop().browse(new URI(s));
+						for(int i=0;i<url.length();i++)
+						{
+							String s = String.valueOf(url.charAt(i));
+							if(isKoreanInclude(s))							
+							{								
+								s=toUTF8(s);
+							}
+							sb.append(s);
+						}					
+						System.out.println(url);
+						String a = sb.toString().replaceAll(" ","");
+						
+						System.out.println(a);
+						Desktop.getDesktop().browse(new URI(a));
 					}
 					else
 					{
