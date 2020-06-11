@@ -179,7 +179,7 @@ public class LoginPageController {
             Scene scene = new Scene(root);
             
             SearchPageController sController = loader.getController();
-            boolean canIMove = sController.transferProduct(received);
+            boolean canIMove = sController.setTableView(received);
             
            if(canIMove) {
         	   primaryStage.setScene(scene);

@@ -12,7 +12,7 @@
    <children>
       <HBox alignment="center">
          <children>
-            <TextField fx:id="searchField" prefHeight="23.0" prefWidth="333.0" />
+            <TextField fx:id="searchField" onKeyPressed="#OnSearchPressed" prefHeight="23.0" prefWidth="333.0" />
             <Button fx:id="SearchBtn" mnemonicParsing="false" onAction="#OnSearchBtnClicked" text="검색" />
          </children>
          <VBox.margin>

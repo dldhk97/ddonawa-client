@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
+import model.Account;
 import model.CollectedInfo;
 import model.Favorite;
 import model.Product;
@@ -45,42 +46,43 @@ import javafx.scene.image.Image;
 
 
 public class ProductPageController extends SidebarController implements Initializable {	
-		@FXML
-	    private ImageView Image;
-		
-	 	@FXML
-	 	private TextField pName;
+	@FXML
+    private ImageView Image;
+	
+ 	@FXML
+ 	private TextField pName;
 
-	    @FXML
-	    private TextField pPrice;
+    @FXML
+    private TextField pPrice;
 
-	    @FXML
-	    private TextField pMinPrice;
+    @FXML
+    private TextField pMinPrice;
 
-	    @FXML
-	    private Button zzimBtn;
+    @FXML
+    private Button zzimBtn;
 
-	    @FXML
-	    private HBox zzimBar;
+    @FXML
+    private HBox zzimBar;
 
-	    @FXML
-	    private TextField targetPrice;
+    @FXML
+    private TextField targetPrice;
 
-	    @FXML
-	    private Button zzimRegister;
-	    
-	    @FXML
-	    private LineChart<String, Double> lineChart;
-
-	    @FXML
-	    private CategoryAxis categoryAxisBottom;
-
-	    @FXML
-	    private NumberAxis numberAxisLeft;
-	    
-    Popup popup;
-    TextArea textArea;
+    @FXML
+    private Button zzimRegister;
     
+    @FXML
+    private LineChart<String, Double> lineChart;
+
+    @FXML
+    private CategoryAxis categoryAxisBottom;
+
+    @FXML
+    private NumberAxis numberAxisLeft;
+	    
+    private Product currentProduct = null; 
+    private Favorite currentFavorite = null;
+    
+    // 해당 상품의 수집정보 목록(최신순)
     ArrayList<CollectedInfo> collectedInfoList = null;
     XYChart.Series<String, Double> series;
     
@@ -94,41 +96,86 @@ public class ProductPageController extends SidebarController implements Initiali
     
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-    	popup = new Popup();
-    	textArea = new TextArea("팝업");
     	
 	}
     
     @FXML
     void OnZzimRegisterBtnClicked(ActionEvent event) {
-    	zzimRegister();
+    	if(currentFavorite == null) {
+    		zzimRegister();
+    	}
+    	else {
+    		IOHandler.getInstance().showAlert("이미 찜 정보가 등록되어 있습니다!", "찜 정보를 삭제한 후 등록해주세요!");
+    	}
+    	
     }
 
     
     @FXML
     void OnZzimBtnClicked(ActionEvent event) {
-//    	if(popup.isShowing()) {
-//    		popup.hide();
-//    	}
-//    	else {
-//    		final Window window = zzimBtn.getScene().getWindow();
-//    		popup.setWidth(100);
-//    		popup.setHeight(300);
-//    		
-//    		final double x = window.getX()+zzimBtn.localToScene(0,0).getX() + zzimBtn.getScene().getX();
-//    		final double y = window.getY()+zzimBtn.localToScene(0,0).getY() + zzimBtn.getScene().getHeight();
-//    		
-//    		popup.getContent().clear();
-//    		popup.getContent().addAll(textArea);
-//    		popup.show(window);
-//    	}
-    	zzimBar.setVisible(true);
+    	zzimBar.setVisible(!zzimBar.isVisible());
+    	
     }
-    public void DataTransfer(Product p)
+    
+    // 서버로부터 찜 정보 가져와서 현재 페이지이 상품에 해당되는 찜 정보 가져옴.
+    private Favorite getFavoriteInfo(){
+    	// 일단 해당 상품의 수집정보 목록이 있어야 함.
+    	if(collectedInfoList == null) {
+			return null;
+		}
+    	try {
+    		// 사용자 정보 획득
+    		Account userAccount = UserAccount.getInstance().getAccount();
+        	
+    		// 서버로 사용자 정보 보내서 찜 목록 가져옴
+    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.GET_FAVORITE, (Object)userAccount);
+        	Response response = received.getResponse();
+        	ResponseType type = response.getResponseType();
+        	
+        	ArrayList<Favorite> favoriteList = null;
+        	
+        	switch(type) {
+        	case SUCCEED:
+        		favoriteList = (ArrayList<Favorite>) received.getObject();
+        		break;
+    		default:
+    			IOHandler.getInstance().showAlert("찜 정보를 가져오는데 실패했습니다!");
+    			break;
+        	}
+        	
+        	if(favoriteList != null) {
+        		// 서버로부터 받아온 찜목록 탐색
+        		for(Favorite f : favoriteList) {
+        			// 찜의 상품명과 현 페이지의 상품명이 같으면 찜 정보 반환
+        			if(f.getProductName().equals(currentProduct.getName())) {
+        				return f;
+        			}
+        		}
+        	}
+        	
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+    	
+    	
+    	return null;
+    }
+    
+    private void setFavoriteInfo() {
+    	if(currentFavorite == null)
+    		return;
+    	
+    	String targetPriceStr = String.valueOf(currentFavorite.getTargetPrice());
+    	targetPrice.setText(targetPriceStr);
+    }
+    
+    public void DataTransfer(Product product)
     {
+    	currentProduct = product;
     	try {
     		// 사용자가 선택한 상품정보를 서버에게 넘겨주고, 수집정보를 가져온다.
-    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.GET_PRODUCT_DETAIL, (Object)p);
+    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.GET_PRODUCT_DETAIL, (Object)currentProduct);
         	Response response = received.getResponse();
         	ResponseType type = response.getResponseType();
         	
@@ -157,7 +204,7 @@ public class ProductPageController extends SidebarController implements Initiali
 	    	}
 	    	
 	    	// 표시할 정보 명시 및 최저가 구하기
-	    	String productName = p.getName();
+	    	String productName = currentProduct.getName();
 	    	Double productPrice = recentInfo.getPrice();
 	    	Double min = getMinPrice(collectedInfoList);
 	    	
@@ -183,7 +230,17 @@ public class ProductPageController extends SidebarController implements Initiali
     	}
     	catch(Exception e) {
     		IOHandler.getInstance().log("ProductPageController.DataTransfer : " +e);
-    	}    	
+    	}
+
+		// 서버로부터 찜 정보 가져옴. 찜 정보가 있다면 세팅.
+    	try {
+    		currentFavorite = getFavoriteInfo();
+    		setFavoriteInfo();
+    		
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
     	
     }
     

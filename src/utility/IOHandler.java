@@ -19,12 +19,24 @@ public class IOHandler {
 	}
 	
 	//경고창 띄우는 메소드
-	public void showAlert(String s)
+	public void showAlert(String msg)
+	{
+		showAlert("Information", null, msg);
+	}
+	
+	//경고창 띄우는 메소드
+	public void showAlert(String title, String msg)
+	{
+		showAlert(title, null, msg);
+	}
+	
+	//경고창 띄우는 메소드
+	public void showAlert(String title, String header, String msg)
 	{
 		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Information");
-		alert.setHeaderText(null);
-		alert.setContentText(s);
+		alert.setTitle(title);
+		alert.setHeaderText(header);
+		alert.setContentText(msg);
 		alert.showAndWait();
 	}
 

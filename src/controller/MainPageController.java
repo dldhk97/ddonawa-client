@@ -146,7 +146,7 @@ public class MainPageController implements Initializable {
             
             SearchPageController sController = loader.getController();
             sController.initialize(primaryStage);
-            boolean canIMove = sController.transferProduct(received);
+            boolean canIMove = sController.setTableView(received);
             
             if(canIMove) {
             	primaryStage.setScene(scene);

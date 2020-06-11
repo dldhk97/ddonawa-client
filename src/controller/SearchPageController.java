@@ -21,6 +21,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -59,6 +61,14 @@ public class SearchPageController {
     
     @FXML
     private Button goToMainBtn;
+    
+    @FXML
+    void OnSearchPressed(KeyEvent event) {
+    	if(event.getCode()==KeyCode.ENTER)
+    	{
+    		onSearch();
+    	}
+    }
 
     @FXML
     void OnGoToMainBtnClicked(ActionEvent event) {    	
@@ -79,7 +89,8 @@ public class SearchPageController {
 
     @FXML
     void OnSearchBtnClicked(ActionEvent event) {
-    	IOHandler.getInstance().showAlert("테스트");
+    	onSearch();
+    	
     }       
     
     //상품이 클릭되었을 때
@@ -124,12 +135,20 @@ public class SearchPageController {
 	
 	public void initialize(Stage stage) {
 		searchField.requestFocus();
-		
-//    	stage.setOnCloseRequest(evt->{    		
-//    	});
 	}
 	
-	public boolean transferProduct(ArrayList<Tuple<Product, CollectedInfo>> receievedList) {
+	private void onSearch() {
+		String searchWord = searchField.getText();
+    	try {
+    		ArrayList<Tuple<Product, CollectedInfo>> searchResult = doSearch(searchWord);
+    		setTableView(searchResult);
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+	}
+	
+	public boolean setTableView(ArrayList<Tuple<Product, CollectedInfo>> receievedList) {
 		try {
 			//밑에 부분이 init 부분으로 가면 왜 안되는지 아직 파악못함
         	ObservableList<Data> myList = FXCollections.observableArrayList();
@@ -158,6 +177,55 @@ public class SearchPageController {
 		}
 		return false;
 	}
+	
+	// 서버 연결해서 상품명으로 검색하고, 결과 받아온다.
+    private ArrayList<Tuple<Product, CollectedInfo>> doSearch(final String searchWord) {
+    	try {
+    		// 검색어 없으면 검색 안함
+    	    int wordLength = searchWord.length();
+    	    if(searchWord == null || wordLength < 1) {
+    	    	return null;
+    	    }
+    	    else if(wordLength < 2) {
+    	    	// 한 글자만 검색하면 검색결과 너무 많음. 2글자 이상 검색해라.
+    	    	IOHandler.getInstance().showAlert("검색어는 2자리 이상 입력해주십시오.");
+    	    	return null;
+    	    }
+    		
+    		// 검색 시 서버로부터 상품정보 - 최신수집정보가 쌍(Tuple)으로 이루어진 결과 배열을 받음.
+    		Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.SEARCH, (Object)searchWord);
+        	Response response = received.getResponse();
+        	ResponseType type = response.getResponseType();
+        	
+        	ArrayList<Tuple<Product, CollectedInfo>> receievedList = null;
+        	
+        	// 응답 결과에 따라 알아서 처리하셈.
+        	switch(type) {
+            	case SUCCEED:
+            		receievedList = (ArrayList<Tuple<Product, CollectedInfo>>) received.getObject();
+            		break;
+            	case FAILED:
+            		break;
+            	case SERVER_NOT_RESPONSE:
+            		break;
+            	case ERROR:
+            		break;
+        		default:
+        			break;
+        	}
+        	
+        	// 서버에서 받아온 값이 있을 때만 처리
+        	if(receievedList == null || receievedList.size() < 1) {
+        		IOHandler.getInstance().showAlert("검색 결과가 없습니다.");
+        		return null;
+        	}
+        	return receievedList;
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+		}
+    	return null;
+    }
     
 }
 

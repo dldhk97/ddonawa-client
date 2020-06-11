@@ -57,7 +57,7 @@ public class Clock extends Thread{
 		while(isRun)
 		{
 			System.out.println("ㅇㅋ 파싱함.");
-			askToServer();
+			requestFavoriteCheck();
 			lastAsk = Calendar.getInstance();
 			
 			try {
@@ -96,8 +96,8 @@ public class Clock extends Thread{
 	}
 	
 	
-	
-	private void askToServer() {
+	// 서버에게 계정 정보를 보내고, 서버는 찜목록 중 최신가격이 목표가격 이하인 항목만 반환한다.
+	private void requestFavoriteCheck() {
 		try {
 			Account account = UserAccount.getInstance().getAccount();
 			Protocol received = NetworkManager.getInstance().connect(ProtocolType.EVENT, EventType.REQUEST_FAVORITE_CHECK, (Object)account);
@@ -121,12 +121,14 @@ public class Clock extends Thread{
         	}
         	
         	if(receievedList != null) {
-        		String msg="";
+        		String title="목표가격을 갱신한 찜 목록이 존재합니다!";
+        		String msg = "";
+        		int cnt = 1;
         		for(CollectedInfo c : receievedList)
         		{
-        			msg += c.getProductName() + " 이(가) 목표가격 갱신! 현재가격은 "+c.getPrice() + " 입니다. \n";
+        			msg += cnt++ + ". " + c.getProductName() + " - 현재가 : " + c.getPrice() + "\n";
         		}
-        		notify(msg);
+        		notify(title, msg);
         	}
 		}catch(Exception e)
 		{
@@ -134,12 +136,12 @@ public class Clock extends Thread{
 		}
 	}
 	
-	private void notify(final String msg) {
+	private void notify(final String title, final String msg) {
 		Platform.runLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				IOHandler.getInstance().showAlert(msg);
+				IOHandler.getInstance().showAlert(title, msg);
 			}
 		});
 	}
