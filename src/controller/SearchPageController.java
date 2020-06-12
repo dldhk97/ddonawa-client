@@ -146,7 +146,11 @@ public class SearchPageController {
 		String searchWord = searchField.getText();
     	try {
     		ArrayList<Tuple<Product, CollectedInfo>> searchResult = doSearch(searchWord);
-    		setTableView(searchResult);
+    		if(searchResult!=null)
+    		{
+    			setTableView(searchResult);    			
+    		}
+    		
     	}
     	catch (Exception e) {
     		e.printStackTrace();
