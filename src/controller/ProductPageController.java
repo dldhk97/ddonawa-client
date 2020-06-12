@@ -187,13 +187,14 @@ public class ProductPageController extends SidebarController implements Initiali
     	}
     	catch (Exception e) {
     		e.printStackTrace();
+
 		}
     	
     	
     	return null;
     }
     
-    public void DataTransfer(Product product)
+    public boolean DataTransfer(Product product)
     {
     	currentProduct = product;
     	try {
@@ -206,9 +207,8 @@ public class ProductPageController extends SidebarController implements Initiali
         	case SUCCEED:
         		collectedInfoList = (ArrayList<CollectedInfo>) received.getObject();
         		break;
-        	case FAILED:
-        		break;
     		default:
+    			closePage();
     			break;
         	}
         	
@@ -216,7 +216,7 @@ public class ProductPageController extends SidebarController implements Initiali
 	    	{
 	    		System.out.println("선택한 상품을 검색에서 못받아옴");
 	    		closePage();
-	    		return;
+	    		return false;
 	    	}    	
 	    	
 	    	// 썸네일 구하기
@@ -283,11 +283,13 @@ public class ProductPageController extends SidebarController implements Initiali
 			
 			setupChart();
 			setupFavoriteView();
+			return true;
     	}
     	catch(Exception e) {
     		IOHandler.getInstance().log("ProductPageController.DataTransfer : " + e);
     		closePage();
     	}
+    	return false;
     	
     }
     
@@ -430,7 +432,8 @@ public class ProductPageController extends SidebarController implements Initiali
     }
 
     private void closePage() {
-    	Stage primaryStage = (Stage) zzimBtn.getScene().getWindow();
-		primaryStage.close();
+    	Stage primaryStage = (Stage) pName.getScene().getWindow();
+    	if(primaryStage != null)
+    		primaryStage.close();
     }
 }

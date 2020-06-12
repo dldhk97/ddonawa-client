@@ -119,11 +119,13 @@ public class SearchPageController {
              Scene scene = new Scene(root);
              
              ProductPageController pController = loader.getController();
-             pController.DataTransfer(p);
+             boolean canIMove = pController.DataTransfer(p);
              
-             primaryStage.setScene(scene);
-             primaryStage.setTitle(p.getName());
-             primaryStage.show();
+             if(canIMove) {
+            	 primaryStage.setScene(scene);
+                 primaryStage.setTitle(p.getName());
+                 primaryStage.show();
+             }             
 
          } catch (Exception e) {
          	String errorMsg = "SearchPageController.moveToProductPager\n" + e.getMessage();

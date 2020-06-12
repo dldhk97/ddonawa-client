@@ -122,11 +122,17 @@ public class zzimPageControll {
              Scene scene = new Scene(root);
              
              ProductPageController pController = loader.getController();
-             pController.DataTransfer(p);
+             boolean canIMove = pController.DataTransfer(p);
              
-             primaryStage.setScene(scene);
-             primaryStage.setTitle(p.getName());
-             primaryStage.show();
+             if(canIMove) {
+            	 primaryStage.setScene(scene);
+                 primaryStage.setTitle(p.getName());
+                 primaryStage.show();
+             }
+             else {
+            	 IOHandler.getInstance().showAlert("알 수 없는 이유로 상품 열람에 실패했습니다.");
+             }
+
 
          } catch (Exception e) {
          	String errorMsg = "SearchPageController.moveToProductPager\n" + e.getMessage();
