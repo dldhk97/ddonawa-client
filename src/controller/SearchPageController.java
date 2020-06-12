@@ -125,7 +125,10 @@ public class SearchPageController {
             	 primaryStage.setScene(scene);
                  primaryStage.setTitle(p.getName());
                  primaryStage.show();
-             }             
+             }
+             else {
+            	 IOHandler.getInstance().showAlert("알 수 없는 이유로 상품 열람에 실패했습니다.");
+             }
 
          } catch (Exception e) {
          	String errorMsg = "SearchPageController.moveToProductPager\n" + e.getMessage();
