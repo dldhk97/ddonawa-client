@@ -59,9 +59,7 @@ public class SidebarController {
        	        menuTranslation.play();
        	    });
        	           	    
-       	    sideBarRoot.widthProperty().addListener(evt->{
-       	    	System.out.println("sideBarRoot 넓이: " +sideBarRoot.getWidth());
-       	    	System.out.println("sidebox 위치: "+sideBarBox.getLayoutX() );
+       	    sideBarRoot.widthProperty().addListener(evt->{       	    	
        	    	sideBarBox.setTranslateX(-90-sideBarBox.getLayoutX());
        	    	menuTranslation.setFromX(-90-sideBarBox.getLayoutX());
         	    menuTranslation.setToX(-sideBarBox.getLayoutX());
