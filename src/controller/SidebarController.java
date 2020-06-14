@@ -45,10 +45,10 @@ public class SidebarController {
     	    }
     	    
     	    sideBarBox.getStylesheets().add(getClass().getResource("/application/menustyle.css").toExternalForm());
-       	    sideBarBox.setTranslateX(-90);
+       	   // sideBarBox.setTranslateX(-90);
        	    TranslateTransition menuTranslation = new TranslateTransition(Duration.millis(500), sideBarBox);       	    
-       	    menuTranslation.setFromX(-90);
-       	    menuTranslation.setToX(0);
+//       	    menuTranslation.setFromX(-90);
+//       	    menuTranslation.setToX(0);
        	    
        	    sideBarBox.setOnMouseEntered(evt -> {
        	        menuTranslation.setRate(1);
@@ -58,11 +58,24 @@ public class SidebarController {
        	        menuTranslation.setRate(-1);
        	        menuTranslation.play();
        	    });
+       	           	    
+       	    sideBarRoot.widthProperty().addListener(evt->{
+       	    	System.out.println("sideBarRoot 넓이: " +sideBarRoot.getWidth());
+       	    	System.out.println("sidebox 위치: "+sideBarBox.getLayoutX() );
+       	    	sideBarBox.setTranslateX(-90-sideBarBox.getLayoutX());
+       	    	menuTranslation.setFromX(-90-sideBarBox.getLayoutX());
+        	    menuTranslation.setToX(-sideBarBox.getLayoutX());
+       	    	
+       	    	
+       	    });
+       	    
+       	 
+       	    
        	    
        	    sideBarRoot.getChildren().addAll(sideBarBox,parent);
        	    Scene scene = new Scene(sideBarRoot);
        	    Stage stage = new Stage();
-       	    
+       	
        	    stage.setScene(scene);
        	    stage.setTitle("또나와 메인화면");
        	    stage.show();
