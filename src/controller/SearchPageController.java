@@ -139,6 +139,14 @@ public class SearchPageController {
     }
 	
 	public void initialize(Stage stage) {
+		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+//		ImageColumn.setMaxWidth(200);		
+//		PriceColumn.setMaxWidth(400);
+//		ProductNameColumn.setMaxWidth(1320);
+		
+		ImageColumn.maxWidthProperty().bind(vbox.widthProperty().multiply(0.1));
+		PriceColumn.maxWidthProperty().bind(vbox.widthProperty().multiply(0.2));
+		ProductNameColumn.maxWidthProperty().bind(vbox.widthProperty().multiply(0.7));
 		searchField.requestFocus();
 	}
 	
